@@ -1,0 +1,41 @@
+# TransProxy Global Configuration
+
+# system configuration
+system:
+  env_mode:       'dev'      # value: dev | prod
+  listen_addr:    8888
+  db:             'mysql'
+  oss:            'local'    # value: local | ali | aws
+
+log:
+  director:   'log'
+  level:      'info'
+
+# jwt configuration
+jwt:
+  signing-key: 'qmPlus'
+  expires-time: 604800
+  buffer-time: 86400
+
+# redis configuration
+redis:
+  db: 0
+  addr: '127.0.0.1:6379'
+  password: ''
+
+# db connect configuration
+db:
+  mysql:
+    host: ''
+    db-name: ''
+    username: 'root'
+    password: 'root'
+    max-idle-conns: 10
+    max-open-conns: 100
+    option: ''
+
+# oss connect configuration
+oss:
+  local:
+    path: 'uploads/file'
+
