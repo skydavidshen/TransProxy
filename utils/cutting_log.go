@@ -2,6 +2,7 @@ package utils
 
 import (
 	"com.pippishen/trans-proxy/manager"
+	"fmt"
 	zaprotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"
 	"path"
@@ -9,7 +10,9 @@ import (
 )
 
 func GetWriteSyncer() (zapcore.WriteSyncer, error) {
-	logDir := manager.TP_CONFIG.Get("log.director").(string)
+	logDir := manager.TP_ROOT_DIR + "/" + manager.TP_CONFIG.Get("log.director").(string)
+	fmt.Printf("log path: %s", path.Join(logDir, "%Y-%m-%d.log"))
+
 	rotateLogs, error := zaprotatelogs.New(
 		path.Join(logDir, "%Y-%m-%d.log"),
 		zaprotatelogs.WithMaxAge(30*24*time.Hour),

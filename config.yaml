@@ -27,12 +27,12 @@ redis:
 db:
   mysql:
     host: ''
-    db-name: ''
+    db-name: 'trans_proxy'
     username: 'root'
     password: 'root'
     max-idle-conns: 10
     max-open-conns: 100
-    option: ''
+    option: 'charset=utf8&parseTime=True&loc=Local'
 
 # oss connect configuration
 oss:

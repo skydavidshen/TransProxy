@@ -1,0 +1,4 @@
+{"level":"error","ts":1619320195.874959,"msg":"Error fetch url..","url":"http://www.googole.com","error":"Get \"http://www.googole.com\": dial tcp: lookup www.googole.com: no such host"}
+{"level":"error","ts":1619320280.149355,"msg":"Error fetch url..","url":"http://www.googole.com","error":"Get \"http://www.googole.com\": dial tcp: lookup www.googole.com: no such host"}
+{"level":"error","ts":1619320308.932174,"msg":"Error fetch url..","url":"http://www.googole.com","error":"Get \"http://www.googole.com\": dial tcp: lookup www.googole.com: no such host"}
+{"level":"error","ts":1619345168.6486762,"msg":"Error fetch url..","url":"http://www.ddgooglesss.com"}

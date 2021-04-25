@@ -23,11 +23,11 @@ func main() {
 	manager.TP_REDIS = cache.Redis()
 
 	if manager.TP_DB != nil {
-		//初始化表和数据
-		db.InitDB()
-
 		//main函数结束之前关闭资源
 		defer db.Close()
+
+		//初始化表和数据
+		db.InitDB()
 	}
 	//Run web server with endless
 	server.Run()
