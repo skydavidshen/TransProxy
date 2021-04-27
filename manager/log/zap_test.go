@@ -3,7 +3,6 @@ package log
 import (
 	"com.pippishen/trans-proxy/manager"
 	TPTesting "com.pippishen/trans-proxy/manager/testing"
-	"com.pippishen/trans-proxy/utils"
 	"fmt"
 	"github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
@@ -18,11 +17,6 @@ func TestLog(t *testing.T) {
 		url := "http://www.ddgooglesss.com"
 		manager.TP_LOG.Error("Error fetch url..", zap.String("url", url))
 	})
-}
-
-func TestMd5(t *testing.T)  {
-	genToken := utils.GetMD5Hash("helloWorld")
-	utils.PrintObj(genToken)
 }
 
 func TestMain(m *testing.M) {

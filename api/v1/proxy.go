@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"com.pippishen/trans-proxy/utils"
+	"com.pippishen/trans-proxy/model/response"
 	"github.com/gin-gonic/gin"
 )
 
 func InsertItem(c *gin.Context)  {
-	utils.PrintObj("insert item")
+	response.OkWithMessage("insert item successfully.", c)
 }

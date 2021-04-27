@@ -16,14 +16,13 @@ func AuthBasic() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var params request.Basic
 		_ = c.ShouldBindJSON(&params)
-
+		privateKey := manager.TP_CONFIG.Get("auth.basic.private-key").(string)
 		dataJson, _ := json.Marshal(params.Data)
 		dataJsonStr := string(dataJson)
-		privateKey := manager.TP_CONFIG.Get("auth.basic.private-key").(string)
 		// token算法: 对称hash加密
 		// token = md5(md5(dataJsonStr) + privateKey + timestamp)
 		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(dataJsonStr), privateKey,
-			strconv.FormatUint(params.Timestamp, 10))
+			strconv.Itoa(params.Timestamp))
 		genToken := utils.GetMD5Hash(preStr)
 
 		if genToken != params.Token {
