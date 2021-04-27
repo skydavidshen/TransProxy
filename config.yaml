@@ -7,15 +7,21 @@ system:
   db:             'mysql'
   oss:            'local'    # value: local | ali | aws
 
+# api接口安全性认证
+auth:
+  # 内部系统间调用：对称加密
+  basic:
+    private-key: '0YawE8IfRwHBzGQzo0cQD87B'
+  # 客户端调用：jwt
+  jwt:
+    signing-key: 'BzTASiwuiZNg0Ltjb55ZjtA8'
+    expires-time: 604800
+    buffer-time: 86400
+
+# 系统日志
 log:
   director:   'log'
   level:      'info'
-
-# jwt configuration
-jwt:
-  signing-key: 'qmPlus'
-  expires-time: 604800
-  buffer-time: 86400
 
 # redis configuration
 redis:
