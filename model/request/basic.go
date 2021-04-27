@@ -1,7 +1,7 @@
 package request
 
 type Basic struct {
-	timestamp int16 `json:"timestamp"`
-	token string `json:"token"`
-	data map[string]interface{} `json:"data"`
+	Timestamp uint64 `json:"timestamp" binding:"required"`
+	Token string `json:"token" binding:"required"`
+	Data map[string]interface{} `json:"data" binding:"required"`
 }
