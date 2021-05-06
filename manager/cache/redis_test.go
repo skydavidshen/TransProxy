@@ -11,18 +11,18 @@ import (
 )
 
 func TestConnect(t *testing.T)  {
-	manager.TP_REDIS = Redis()
+	manager.TP_CACHE_REDIS = Redis()
 	convey.Convey("test connect redis", t, func() {
-		convey.So(manager.TP_REDIS.Ping().String(), convey.ShouldEqual, "ping: PONG")
+		convey.So(manager.TP_CACHE_REDIS.Ping().String(), convey.ShouldEqual, "ping: PONG")
 	})
 }
 
 func TestGetSet(t *testing.T)  {
-	manager.TP_REDIS = Redis()
+	manager.TP_CACHE_REDIS = Redis()
 	convey.Convey("get and set value", t, func() {
-		manager.TP_REDIS.Set("username", "david", 10 * time.Second)
+		manager.TP_CACHE_REDIS.Set("username", "david", 10 * time.Second)
 		time.Sleep(8 * time.Second)
-		v := manager.TP_REDIS.Get("username")
+		v := manager.TP_CACHE_REDIS.Get("username")
 		r, _ := v.Result()
 		convey.So(r, convey.ShouldEqual, "david")
 	})

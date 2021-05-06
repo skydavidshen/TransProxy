@@ -19,6 +19,7 @@ func Zap() (logger *zap.Logger) {
 	} else {
 		logger = zap.New(core)
 	}
+
 	return logger
 }
 

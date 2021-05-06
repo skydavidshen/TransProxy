@@ -6,6 +6,7 @@ import (
 	"com.pippishen/trans-proxy/manager/config"
 	"com.pippishen/trans-proxy/manager/db"
 	"com.pippishen/trans-proxy/manager/log"
+	"com.pippishen/trans-proxy/manager/mq"
 	"com.pippishen/trans-proxy/manager/server"
 	"com.pippishen/trans-proxy/utils"
 )
@@ -20,8 +21,11 @@ func main() {
 	//数据库服务
 	manager.TP_DB = db.Gorm()
 	//缓存 - redis服务
-	manager.TP_REDIS = cache.Redis()
+	manager.TP_CACHE_REDIS = cache.Redis()
+	//消息中间件 - rabbitMQ服务
+	manager.TP_MQ_RABBIT = mq.Amqp()
 
+	//release db
 	if manager.TP_DB != nil {
 		//main函数结束之前关闭资源
 		defer db.Close()
@@ -29,6 +33,17 @@ func main() {
 		//初始化表和数据
 		db.InitDB()
 	}
+
+	//release cache
+	if manager.TP_CACHE_REDIS != nil {
+		defer cache.Close()
+	}
+
+	//release mq
+	if manager.TP_MQ_RABBIT != nil {
+		defer mq.Close()
+	}
+	
 	//Run web server with endless
 	server.Run()
 }

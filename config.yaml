@@ -40,6 +40,12 @@ db:
     max-open-conns: 100
     option: 'charset=utf8&parseTime=True&loc=Local'
 
+mq:
+  rabbitmq:
+    username: 'transproxy'
+    password: 'transproxy'
+    addr:     '172.100.200.5:30608'
+
 # oss connect configuration
 oss:
   local:

@@ -22,5 +22,6 @@ func Viper() *viper.Viper {
 	v.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("config file changed: ", e.Name)
 	})
+
 	return v
 }
