@@ -23,7 +23,8 @@ func main() {
 	//缓存 - redis服务
 	manager.TP_CACHE_REDIS = cache.Redis()
 	//消息中间件 - rabbitMQ服务
-	manager.TP_MQ_RABBIT = mq.Amqp()
+	rabbitMqVHost := manager.TP_CONFIG.Get("mq.rabbitmq.default-vhost").(string)
+	manager.TP_MQ_RABBIT = mq.Amqp(rabbitMqVHost)
 
 	//release db
 	if manager.TP_DB != nil {

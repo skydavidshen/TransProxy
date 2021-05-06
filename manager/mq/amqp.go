@@ -7,8 +7,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func Amqp() *amqp.Connection {
-	url := getDsn()
+func Amqp(vHost string) *amqp.Connection {
+	url := getDsn(vHost)
 	conn, err := amqp.Dial(url)
 	if err != nil {
 		manager.TP_LOG.Error("amqp rabbit mq connect failed, err:",
@@ -19,7 +19,8 @@ func Amqp() *amqp.Connection {
 	return conn
 }
 
-func getDsn() string {
+// vHost: rabbitMq virtual host
+func getDsn(vHost string) string {
 	config := manager.TP_CONFIG.Get("mq.rabbitmq").(map[string]interface{})
 
 	var buffer bytes.Buffer
@@ -29,6 +30,8 @@ func getDsn() string {
 	buffer.WriteString(config["password"].(string))
 	buffer.WriteString("@")
 	buffer.WriteString(config["addr"].(string))
+	buffer.WriteString("/")
+	buffer.WriteString(vHost)
 	return buffer.String()
 }
 

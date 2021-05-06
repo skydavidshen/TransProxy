@@ -42,9 +42,10 @@ db:
 
 mq:
   rabbitmq:
-    username: 'transproxy'
-    password: 'transproxy'
-    addr:     '172.100.200.5:30608'
+    username:       'transproxy'
+    password:       'transproxy'
+    addr:           '172.100.200.5:30608'
+    default-vhost:  'transproxy'
 
 # oss connect configuration
 oss:
