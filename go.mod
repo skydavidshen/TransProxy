@@ -3,8 +3,10 @@ module com.pippishen/trans-proxy
 go 1.14
 
 require (
+	github.com/bregydoc/gtranslate v0.0.0-20200913051839-1bd07f6c1fc5
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
+	github.com/fvbock/gorequests v0.0.0-20150114033949-860ace0675a4 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible
@@ -20,6 +22,8 @@ require (
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/pelletier/go-toml v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/robertkrimen/otto v0.0.0-20200922221731-ef014fd054ac // indirect
+	github.com/sh1yu/bing-translate v0.0.0-20190331143722-346c6de61d67
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/afero v1.6.0 // indirect
@@ -28,13 +32,16 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/streadway/amqp v1.0.0
+	github.com/theplant/bingtranslator v0.0.0-20150421080946-6977b681fd8b // indirect
 	github.com/ugorji/go v1.2.5 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/text v0.3.6
+	golang.org/x/tools v0.1.0
 	gopkg.in/ini.v1 v1.62.0 // indirect
+	gopkg.in/sourcemap.v1 v1.0.5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.0.5
 	gorm.io/gorm v1.21.8
