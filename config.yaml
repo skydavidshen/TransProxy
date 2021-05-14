@@ -52,3 +52,5 @@ oss:
   local:
     path: 'uploads/file'
 
+proxy:
+  url: 'http://tiqu.linksocket.com:81/abroad?num=1&type=2&lb=1&sb=0&flow=1&regions=us&port=1&n=0'

@@ -13,6 +13,7 @@ const (
 	proxyHost   = "gate.visitxiangtan.com:7000"
 	username    = "sp9e3fd0b2"
 	password    = "12345678"
+	//resourceUrl = "https://www.bing.com"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	fmt.Println(string(body))
-	//var body map[string]interface{}
+	//var body map[string]inter{}
 	//if err = json.NewDecoder(resp.Body).Decode(&body); err != nil {
 	//	log.Fatal(err)
 	//}

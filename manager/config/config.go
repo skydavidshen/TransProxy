@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 const configPath string = "config.yaml"
@@ -22,6 +23,12 @@ func Viper() *viper.Viper {
 	v.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("config file changed: ", e.Name)
 	})
+
+	//服务配置文件config.yaml加载入对象
+	if err := v.Unmarshal(&manager.TP_SERVER_CONFIG); err != nil {
+		manager.TP_LOG.Error("Read server config yaml file failed, err:",
+			zap.String("err", err.Error()))
+	}
 
 	return v
 }

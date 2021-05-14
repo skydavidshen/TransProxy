@@ -22,7 +22,7 @@ require (
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/pelletier/go-toml v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/robertkrimen/otto v0.0.0-20200922221731-ef014fd054ac // indirect
+	github.com/robertkrimen/otto v0.0.0-20200922221731-ef014fd054ac
 	github.com/sh1yu/bing-translate v0.0.0-20190331143722-346c6de61d67 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
@@ -38,7 +38,8 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/net v0.0.0-20210428140749-89ef3d95e781
+	golang.org/x/text v0.3.6
 	golang.org/x/tools v0.1.0 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/sourcemap.v1 v1.0.5 // indirect

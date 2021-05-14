@@ -13,6 +13,7 @@ import (
 	"com.pippishen/trans-proxy/manager/mq"
 	"com.pippishen/trans-proxy/manager/server"
 	"com.pippishen/trans-proxy/utils"
+	"fmt"
 )
 
 func main() {
@@ -48,7 +49,9 @@ func main() {
 	if manager.TP_MQ_RABBIT != nil {
 		defer mq.Close()
 	}
-	
+
+	fmt.Printf("\nServer conf: %v\n", manager.TP_SERVER_CONFIG)
+
 	//Run web server with endless
 	server.Run()
 }
