@@ -11,16 +11,16 @@ import (
 	"time"
 )
 
-var testApi = "http://www.baidu.com"
+var testApi = "https://translate.google.com/translate_a/single?client=gtx&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&hl=en&ie=UTF-8&kc=7&oe=UTF-8&otf=1&q=%E4%BD%A0%E5%A5%BD&sl=auto&ssel=0&tk=879267.879267&tl=en&tsel=0"
 
 func main() {
 	fmt.Println("代理测试")
 
-	go httpProxy("47.242.13.24", 13428)
+	httpProxy("49.51.73.134", 17939)
 
 	//go socks5Proxy("8.210.11.115", 15767)
 
-	time.Sleep(time.Hour)
+	//time.Sleep(time.Hour)
 }
 
 func httpProxy(ip string, port int) {

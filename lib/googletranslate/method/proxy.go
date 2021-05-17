@@ -1,23 +1,26 @@
 package method
 
 import (
-	"com.pippishen/trans-proxy/model/business"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 )
 
+func NewProxy(url *url.URL) *Proxy {
+	p := &Proxy{
+		url,
+	}
+	return p
+}
+
 type Proxy struct {
-	ProxyConf business.ProxyConf
+	URL *url.URL
 }
 
 func (p *Proxy) Content(resourceUrl string) ([]byte, error) {
-	urli := url.URL{}
-	urlproxy, _ := urli.Parse(fmt.Sprintf("http://%s:%d", p.ProxyConf.IP, p.ProxyConf.Port))
 	client := &http.Client{
 		Transport: &http.Transport{
-			Proxy: http.ProxyURL(urlproxy),
+			Proxy: http.ProxyURL(p.URL),
 		},
 	}
 	rqt, err := http.NewRequest("GET", resourceUrl, nil)
