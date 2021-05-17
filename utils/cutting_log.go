@@ -10,7 +10,7 @@ import (
 )
 
 func GetWriteSyncer() (zapcore.WriteSyncer, error) {
-	logDir := manager.TP_ROOT_DIR + "/" + manager.TP_CONFIG.Get("log.director").(string)
+	logDir := manager.TP_ROOT_DIR + "/" + manager.TP_SERVER_CONFIG.Log.Director
 	fmt.Printf("log path: %s", path.Join(logDir, "%Y-%m-%d.log"))
 
 	rotateLogs, error := zaprotatelogs.New(

@@ -23,7 +23,7 @@ func initServer(addr string, router *gin.Engine) WebServer {
 
 func Run() {
 	router := TPRouter.Routers()
-	listenAddr := fmt.Sprintf(":%d", manager.TP_CONFIG.Get("system.listen_addr"))
+	listenAddr := fmt.Sprintf(":%d", manager.TP_SERVER_CONFIG.System.Addr)
 	s := initServer(listenAddr, router)
 	err := s.ListenAndServe()
 	if err != nil {

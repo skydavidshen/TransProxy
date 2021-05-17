@@ -17,7 +17,7 @@ func TestConfLoad(t *testing.T) {
 	//配置文件处理服务:支持热修改
 	manager.TP_CONFIG = Viper()
 	convey.Convey("get config for system.env_mode", t, func() {
-		convey.So(manager.TP_CONFIG.Get("system.env_mode").(string), convey.ShouldEqual, "dev")
+		convey.So(manager.TP_SERVER_CONFIG.System.Env, convey.ShouldEqual, "dev")
 	})
 }
 

@@ -8,11 +8,10 @@ import (
 )
 
 func Redis() *redis.Client {
-	redisCfg := manager.TP_CONFIG.Get("redis").(map[string]interface{})
 	client := redis.NewClient(&redis.Options{
-		Addr: redisCfg["addr"].(string),
-		Password: redisCfg["password"].(string),
-		DB: redisCfg["db"].(int),
+		Addr: manager.TP_SERVER_CONFIG.Redis.Addr,
+		Password: manager.TP_SERVER_CONFIG.Redis.Password,
+		DB: manager.TP_SERVER_CONFIG.Redis.DB,
 	})
 
 	pong, err := client.Ping().Result()

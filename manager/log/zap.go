@@ -52,7 +52,7 @@ func getEncoder() zapcore.Encoder {
 //Get the level based on the configuration file
 func getLogLevel() zapcore.Level {
 	var level zapcore.Level
-	levelConf := manager.TP_CONFIG.Get("log.level").(string)
+	levelConf := manager.TP_SERVER_CONFIG.Log.Level
 
 	switch levelConf { // 初始化配置文件的Level
 	case "debug":

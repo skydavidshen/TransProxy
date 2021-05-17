@@ -21,15 +21,13 @@ func Amqp(vHost string) *amqp.Connection {
 
 // vHost: rabbitMq virtual host
 func getDsn(vHost string) string {
-	config := manager.TP_CONFIG.Get("mq.rabbitmq").(map[string]interface{})
-
 	var buffer bytes.Buffer
 	buffer.WriteString("amqp://")
-	buffer.WriteString(config["username"].(string))
+	buffer.WriteString(manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Username)
 	buffer.WriteString(":")
-	buffer.WriteString(config["password"].(string))
+	buffer.WriteString(manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Password)
 	buffer.WriteString("@")
-	buffer.WriteString(config["addr"].(string))
+	buffer.WriteString(manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Addr)
 	buffer.WriteString("/")
 	buffer.WriteString(vHost)
 	return buffer.String()

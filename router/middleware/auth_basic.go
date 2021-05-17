@@ -16,7 +16,8 @@ func AuthBasic() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var params request.Basic
 		_ = c.ShouldBindJSON(&params)
-		privateKey := manager.TP_CONFIG.Get("auth.basic.private-key").(string)
+		privateKey := manager.TP_SERVER_CONFIG.Auth.AuthBasic.PrivateKey
+
 		dataJson, _ := json.Marshal(params.Data)
 		dataJsonStr := string(dataJson)
 		// token算法: 对称hash加密
@@ -24,7 +25,7 @@ func AuthBasic() gin.HandlerFunc {
 		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(dataJsonStr), privateKey,
 			strconv.Itoa(params.Timestamp))
 		genToken := utils.GetMD5Hash(preStr)
-
+		
 		if genToken != params.Token {
 			response.FailWithMessage("token error, this is a illegal action.", c)
 			manager.TP_LOG.Error("token error, this is a illegal action.",
