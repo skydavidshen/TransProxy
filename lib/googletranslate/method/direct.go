@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-type Basic struct {
+type Direct struct {
 
 }
 
-func (b *Basic) Content(resourceUrl string) ([]byte, error) {
+func (d *Direct) Content(resourceUrl string) ([]byte, error) {
 	var r *http.Response
 	tries := 3
 	for tries > 0 {
