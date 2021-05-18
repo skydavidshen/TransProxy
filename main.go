@@ -13,6 +13,7 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/manager/server"
 	"TransProxy/utils"
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -29,6 +30,8 @@ func main() {
 	//消息中间件 - rabbitMQ服务
 	rabbitMqVHost := manager.TP_SERVER_CONFIG.MQ.RabbitMQ.DefaultVhost
 	manager.TP_MQ_RABBIT = mq.Amqp(rabbitMqVHost)
+	//请求验证库
+	manager.TP_VALIDATE = validator.New()
 
 	//release db
 	if manager.TP_DB != nil {

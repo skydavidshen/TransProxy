@@ -5,17 +5,33 @@ import (
 	"TransProxy/model/request"
 	"TransProxy/model/response"
 	"TransProxy/utils"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"io/ioutil"
 	"strconv"
 )
 
 func AuthBasic() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// 重新写回Request Body, 供controller使用
+		bodyBytes, _ := ioutil.ReadAll(c.Request.Body)
+		c.Request.Body.Close()  //  must close
+		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
 		var params request.Basic
-		_ = c.ShouldBindJSON(&params)
+		_ = json.Unmarshal(bodyBytes, &params)
+
+		err := manager.TP_VALIDATE.Struct(params)
+		if err != nil {
+			response.FailWithMessage("Request data invalid.", c)
+			manager.TP_LOG.Error("Request data invalid.")
+			c.Abort()
+			return
+		}
+
 		privateKey := manager.TP_SERVER_CONFIG.Auth.AuthBasic.PrivateKey
 
 		dataJson, _ := json.Marshal(params.Data)

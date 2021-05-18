@@ -2,6 +2,7 @@ package manager
 
 import (
 	"TransProxy/config"
+	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
@@ -17,4 +18,5 @@ var (
 	TP_CONFIG         *viper.Viper
 	TP_SERVER_CONFIG  *config.ServerConf
 	TP_MQ_RABBIT      *amqp.Connection
+	TP_VALIDATE       *validator.Validate
 )

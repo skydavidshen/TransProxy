@@ -12,7 +12,7 @@ func TestIpIdea(t *testing.T) {
 	urlStr := "http://tiqu.linksocket.com:81/abroad?num=1&type=2&lb=1&sb=0&flow=1&regions=&port=1&n=0"
 	proxyIps := proxyip.NewIpIdea(urlStr).GetProxy()
 
-	for _,proxyIp := range proxyIps {
+	for _, proxyIp := range proxyIps {
 		urlProxy := utils.BuildIpIdeaUrl(proxyIp.IP, proxyIp.Port)
 
 		translate := TranslationParams {

@@ -15,7 +15,7 @@ func Routers() *gin.Engine {
 	})
 
 	//insert item
-	proxyRouter := router.Group("proxy").Use(middleware.AuthBasic())
+	proxyRouter := router.Group("google").Use(middleware.AuthBasic())
 	{
 		proxyRouter.POST("insert-item", v1.InsertItem)
 	}
