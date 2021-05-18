@@ -1,9 +1,7 @@
 package service
 
-type Google struct {
+type Google struct {}
 
-}
-
-func (g *Google) insertItem()  {
+func (g *Google) insertItem() {
 
 }

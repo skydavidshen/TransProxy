@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"strconv"
@@ -21,10 +22,19 @@ func AuthBasic() gin.HandlerFunc {
 		c.Request.Body.Close()  //  must close
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 
+		var header request.Header
+		err := mapstructure.Decode(c.Request.Header, &header)
+		if err != nil {
+			response.FailWithMessage("Request header data invalid.", c)
+			manager.TP_LOG.Error("Request header data invalid.")
+			c.Abort()
+			return
+		}
+
 		var params request.Basic
 		_ = json.Unmarshal(bodyBytes, &params)
 
-		err := manager.TP_VALIDATE.Struct(params)
+		err = manager.TP_VALIDATE.Struct(params)
 		if err != nil {
 			response.FailWithMessage("Request data invalid.", c)
 			manager.TP_LOG.Error("Request data invalid.")
