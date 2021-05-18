@@ -6,7 +6,6 @@ import (
 	"TransProxy/model/response"
 	"TransProxy/utils"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
@@ -22,6 +21,18 @@ func AuthBasic() gin.HandlerFunc {
 		c.Request.Body.Close()  //  must close
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 
+		/*
+		var item request.Item
+		_ = json.Unmarshal(bodyBytes, &item)
+		errItem := manager.TP_VALIDATE.Struct(item)
+		if errItem != nil {
+			response.FailWithMessage("Request data invalid.", c)
+			manager.TP_LOG.Error("Request data invalid.")
+			c.Abort()
+			return
+		}
+		*/
+
 		var header request.Header
 		err := mapstructure.Decode(c.Request.Header, &header)
 		if err != nil {
@@ -31,32 +42,20 @@ func AuthBasic() gin.HandlerFunc {
 			return
 		}
 
-		var params request.Basic
-		_ = json.Unmarshal(bodyBytes, &params)
-
-		err = manager.TP_VALIDATE.Struct(params)
-		if err != nil {
-			response.FailWithMessage("Request data invalid.", c)
-			manager.TP_LOG.Error("Request data invalid.")
-			c.Abort()
-			return
-		}
-
+		bodyStr := string(bodyBytes)
+		timeStamp, _ := strconv.Atoi(header.Timestamp[0])
 		privateKey := manager.TP_SERVER_CONFIG.Auth.AuthBasic.PrivateKey
-
-		dataJson, _ := json.Marshal(params.Data)
-		dataJsonStr := string(dataJson)
 		// token算法: 对称hash加密
-		// token = md5(md5(dataJsonStr) + privateKey + timestamp)
-		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(dataJsonStr), privateKey,
-			strconv.Itoa(params.Timestamp))
+		// token = md5(md5(bodyStr) + privateKey + timestamp)
+		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(bodyStr), privateKey,
+			strconv.Itoa(timeStamp))
 		genToken := utils.GetMD5Hash(preStr)
 		
-		if genToken != params.Token {
+		if genToken != header.Token[0] {
 			response.FailWithMessage("token error, this is a illegal action.", c)
 			manager.TP_LOG.Error("token error, this is a illegal action.",
-				zap.String("data", dataJsonStr),
-				zap.String("req-token", params.Token),
+				zap.String("data", bodyStr),
+				zap.String("req-token", header.Token[0]),
 				zap.String("gen-token", genToken))
 
 			c.Abort()
