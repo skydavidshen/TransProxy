@@ -15,9 +15,9 @@ func Demo() gin.HandlerFunc {
 		c.Request.Body.Close()  //  must close
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 
-		var params request.Basic
-		_ = json.Unmarshal(bodyBytes, &params)
-		fmt.Println("before", params.Data)
+		var item request.Item
+		_ = json.Unmarshal(bodyBytes, &item)
+		fmt.Println("before", item.Text)
 
 		c.Next()
 		fmt.Println("after middle demo....")

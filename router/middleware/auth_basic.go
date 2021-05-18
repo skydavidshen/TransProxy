@@ -18,20 +18,8 @@ func AuthBasic() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 重新写回Request Body, 供controller使用
 		bodyBytes, _ := ioutil.ReadAll(c.Request.Body)
-		c.Request.Body.Close()  //  must close
+		c.Request.Body.Close() //  must close
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
-
-		/*
-		var item request.Item
-		_ = json.Unmarshal(bodyBytes, &item)
-		errItem := manager.TP_VALIDATE.Struct(item)
-		if errItem != nil {
-			response.FailWithMessage("Request data invalid.", c)
-			manager.TP_LOG.Error("Request data invalid.")
-			c.Abort()
-			return
-		}
-		*/
 
 		var header request.Header
 		err := mapstructure.Decode(c.Request.Header, &header)
@@ -50,7 +38,7 @@ func AuthBasic() gin.HandlerFunc {
 		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(bodyStr), privateKey,
 			strconv.Itoa(timeStamp))
 		genToken := utils.GetMD5Hash(preStr)
-		
+
 		if genToken != header.Token[0] {
 			response.FailWithMessage("token error, this is a illegal action.", c)
 			manager.TP_LOG.Error("token error, this is a illegal action.",
