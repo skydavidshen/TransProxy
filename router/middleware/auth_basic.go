@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	"com.pippishen/trans-proxy/model/request"
-	"com.pippishen/trans-proxy/model/response"
-	"com.pippishen/trans-proxy/utils"
+	"TransProxy/manager"
+	"TransProxy/model/request"
+	"TransProxy/model/response"
+	"TransProxy/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"com.pippishen/trans-proxy/manager"
+	"TransProxy/manager"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"

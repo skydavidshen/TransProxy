@@ -5,14 +5,14 @@
 package main
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	"com.pippishen/trans-proxy/manager/cache"
-	"com.pippishen/trans-proxy/manager/config"
-	"com.pippishen/trans-proxy/manager/db"
-	"com.pippishen/trans-proxy/manager/log"
-	"com.pippishen/trans-proxy/manager/mq"
-	"com.pippishen/trans-proxy/manager/server"
-	"com.pippishen/trans-proxy/utils"
+	"TransProxy/manager"
+	"TransProxy/manager/cache"
+	"TransProxy/manager/config"
+	"TransProxy/manager/db"
+	"TransProxy/manager/log"
+	"TransProxy/manager/mq"
+	"TransProxy/manager/server"
+	"TransProxy/utils"
 )
 
 func main() {

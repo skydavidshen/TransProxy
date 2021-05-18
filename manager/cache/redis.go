@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"com.pippishen/trans-proxy/manager"
+	"TransProxy/manager"
 	"fmt"
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"

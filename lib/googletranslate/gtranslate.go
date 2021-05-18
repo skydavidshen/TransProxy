@@ -1,7 +1,7 @@
 package googletranslate
 
 import (
-	"com.pippishen/trans-proxy/lib/googletranslate/method"
+	"TransProxy/lib/googletranslate/method"
 	"time"
 )
 

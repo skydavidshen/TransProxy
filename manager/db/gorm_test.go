@@ -1,8 +1,8 @@
 package db
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	TPTesting "com.pippishen/trans-proxy/manager/testing"
+	"TransProxy/manager"
+	TPTesting "TransProxy/manager/testing"
 	"fmt"
 	"github.com/smartystreets/goconvey/convey"
 	"gorm.io/gorm"

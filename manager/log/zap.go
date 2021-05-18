@@ -1,8 +1,8 @@
 package log
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	"com.pippishen/trans-proxy/utils"
+	"TransProxy/manager"
+	"TransProxy/utils"
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

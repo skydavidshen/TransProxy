@@ -2,7 +2,7 @@ package db
 
 import (
 	"bytes"
-	"com.pippishen/trans-proxy/manager"
+	"TransProxy/manager"
 	"fmt"
 	mysqldriver "gorm.io/driver/mysql"
 	"gorm.io/gorm"

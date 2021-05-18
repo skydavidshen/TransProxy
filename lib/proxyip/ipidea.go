@@ -1,7 +1,7 @@
 package proxyip
 
 import (
-	"com.pippishen/trans-proxy/model/business"
+	"TransProxy/model/business"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"

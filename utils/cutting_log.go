@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"com.pippishen/trans-proxy/manager"
+	"TransProxy/manager"
 	"fmt"
 	zaprotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"

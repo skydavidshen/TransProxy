@@ -1,8 +1,8 @@
 package server
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	TPRouter "com.pippishen/trans-proxy/router"
+	"TransProxy/manager"
+	TPRouter "TransProxy/router"
 	"fmt"
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"

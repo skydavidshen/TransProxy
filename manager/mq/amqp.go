@@ -2,7 +2,7 @@ package mq
 
 import (
 	"bytes"
-	"com.pippishen/trans-proxy/manager"
+	"TransProxy/manager"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
 )

@@ -2,7 +2,7 @@ package mq
 
 import (
 	"bytes"
-	TPTesting "com.pippishen/trans-proxy/manager/testing"
+	TPTesting "TransProxy/manager/testing"
 	"fmt"
 	"github.com/smartystreets/goconvey/convey"
 	"github.com/streadway/amqp"

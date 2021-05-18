@@ -1,8 +1,8 @@
 package testing
 
 import (
-	"com.pippishen/trans-proxy/manager"
-	"com.pippishen/trans-proxy/manager/config"
+	"TransProxy/manager"
+	"TransProxy/manager/config"
 )
 
 const rootDir = "/Users/davidshen/Documents/webroot/TransProxy"

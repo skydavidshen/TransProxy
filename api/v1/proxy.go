@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"com.pippishen/trans-proxy/model/response"
+	"TransProxy/model/response"
 	"github.com/gin-gonic/gin"
 )
 

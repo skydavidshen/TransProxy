@@ -1,9 +1,9 @@
 package googletranslate
 
 import (
-	"com.pippishen/trans-proxy/lib/googletranslate/method"
-	"com.pippishen/trans-proxy/lib/proxyip"
-	"com.pippishen/trans-proxy/utils"
+	"TransProxy/lib/googletranslate/method"
+	"TransProxy/lib/proxyip"
+	"TransProxy/utils"
 	"fmt"
 	"testing"
 )

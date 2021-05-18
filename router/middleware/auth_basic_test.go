@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"com.pippishen/trans-proxy/utils"
+	"TransProxy/utils"
 	"encoding/json"
 	"fmt"
 	"strconv"

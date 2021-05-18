@@ -1,8 +1,8 @@
 package router
 
 import (
-	v1 "com.pippishen/trans-proxy/api/v1"
-	"com.pippishen/trans-proxy/router/middleware"
+	v1 "TransProxy/api/v1"
+	"TransProxy/router/middleware"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
