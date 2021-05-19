@@ -31,7 +31,7 @@ func translate(text, from, to string, withVerification bool, method method.Metho
 
 	t, _ := otto.ToValue(text)
 
-	urll := fmt.Sprintf("https://translate.%s/translate_a/single", GoogleHost)
+	urll := fmt.Sprintf("https://Translate.%s/translate_a/single", GoogleHost)
 
 	token := get(t, ttk)
 

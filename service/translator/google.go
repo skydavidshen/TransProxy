@@ -1,18 +1,23 @@
-package service
+package translator
 
 import (
 	"TransProxy/manager"
+	"TransProxy/model/business"
 	"TransProxy/model/request"
+	trans_platform "TransProxy/service/trans-platform"
 	"encoding/json"
+	"fmt"
 	"github.com/streadway/amqp"
 	"log"
+	"strings"
 )
 
 const mqKey = "google"
 const exchange = "trans-items"
-const contentType = "application/json"
 
-type Google struct{}
+type Google struct{
+	platformHandler trans_platform.Handler
+}
 
 func (g *Google) InsertItem(item request.Item) error {
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
@@ -33,4 +38,14 @@ func (g *Google) InsertItem(item request.Item) error {
 	}
 
 	return nil
+}
+
+func (g *Google) Translate(item request.Item) business.TranslateItem {
+	toArr := strings.Split(item.To, ",")
+	for _, to := range toArr {
+		result, err := g.platformHandler.Translate(to, item.Text)
+		fmt.Println("result: ", result)
+		fmt.Println("err: ", err)
+	}
+	return business.TranslateItem{}
 }

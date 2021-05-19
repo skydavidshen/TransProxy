@@ -16,11 +16,11 @@ func TestIpIdea(t *testing.T) {
 		urlProxy := utils.BuildIpIdeaUrl(proxyIp.IP, proxyIp.Port)
 
 		translate := TranslationParams {
-			From: "auto",
-			To:   "en",
-			method: method.NewProxy(urlProxy),
+			From:   "auto",
+			To:     "en",
+			Method: method.NewProxy(urlProxy),
 		}
-		result, err := translate.translate("你好")
+		result, err := translate.Translate("你好")
 		if err != nil {
 			panic(err)
 		}
@@ -33,11 +33,11 @@ func TestSmartProxy(t *testing.T) {
 	urlProxy := utils.BuildSmartProxyUrl("sp9e3fd0b2", "12345678", "gate.smartproxy.com:7000")
 
 	translate := TranslationParams {
-		From: "auto",
-		To:   "en",
-		method: method.NewProxy(urlProxy),
+		From:   "auto",
+		To:     "en",
+		Method: method.NewProxy(urlProxy),
 	}
-	result, err := translate.translate("你好")
+	result, err := translate.Translate("你好")
 	if err != nil {
 		panic(err)
 	}

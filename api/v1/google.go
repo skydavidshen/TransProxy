@@ -4,13 +4,13 @@ import (
 	"TransProxy/manager"
 	"TransProxy/model/request"
 	"TransProxy/model/response"
-	"TransProxy/service"
+	"TransProxy/service/translator"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"log"
 )
 
-var googleService service.Google
+var googleService translator.Google
 
 func InsertItem(c *gin.Context)  {
 	var basic request.Basic

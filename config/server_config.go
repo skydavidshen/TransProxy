@@ -88,3 +88,12 @@ type OSSLocal struct {
 type Proxy struct {
 	Url string `mapstructure:"url" json:"url" yaml:"url"`
 }
+
+// ThirdParty Node
+type ThirdParty struct {
+	ThirdPartyVaffle ThirdPartyVaffle `mapstructure:"vaffle" json:"vaffle" yaml:"vaffle"`
+}
+
+type ThirdPartyVaffle struct {
+	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
+}

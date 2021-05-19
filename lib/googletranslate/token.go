@@ -106,7 +106,7 @@ func updateTTK(TTK otto.Value) (otto.Value, error) {
 		return TTK, nil
 	}
 
-	resp, err := http.Get(fmt.Sprintf("https://translate.%s", GoogleHost))
+	resp, err := http.Get(fmt.Sprintf("https://Translate.%s", GoogleHost))
 	if err != nil {
 		return otto.UndefinedValue(), err
 	}
