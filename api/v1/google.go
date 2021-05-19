@@ -4,11 +4,13 @@ import (
 	"TransProxy/manager"
 	"TransProxy/model/request"
 	"TransProxy/model/response"
-	"fmt"
+	"TransProxy/service"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"log"
 )
+
+var googleService service.Google
 
 func InsertItem(c *gin.Context)  {
 	var basic request.Basic
@@ -23,8 +25,11 @@ func InsertItem(c *gin.Context)  {
 		return
 	}
 
-	fmt.Println("items: ", item)
-
-	response.OkWithMessage("insert item successfully.", c)
-	fmt.Println("after response")
+	err := googleService.InsertItem(item)
+	if err != nil {
+		response.OkWithMessage("Failed to insert item.", c)
+		log.Println(err)
+		return
+	}
+	response.OkWithMessage("Insert item successfully.", c)
 }

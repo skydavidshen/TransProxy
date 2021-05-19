@@ -43,7 +43,9 @@ func AuthBasic() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		// c.Next() 后面的代码会在 controller response json之后责任链模式执行，后续的middleware Next()方法会逐个被调用
 		c.Next()
-		fmt.Println("next auth basic...")
+		fmt.Println("Next for auth basic...")
 	}
 }

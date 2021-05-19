@@ -17,3 +17,6 @@
 log/*
 .idea/
 .air.toml
+tmp/*
+tmp
+/tmp/
