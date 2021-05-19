@@ -6,9 +6,9 @@ import (
 	"TransProxy/model/response"
 	"TransProxy/utils"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"strconv"
@@ -21,34 +21,29 @@ func AuthBasic() gin.HandlerFunc {
 		c.Request.Body.Close() //  must close
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 
-		var header request.Header
-		err := mapstructure.Decode(c.Request.Header, &header)
-		if err != nil {
-			response.FailWithMessage("Request header data invalid.", c)
-			manager.TP_LOG.Error("Request header data invalid.")
-			c.Abort()
-			return
-		}
-
-		bodyStr := string(bodyBytes)
-		timeStamp, _ := strconv.Atoi(header.Timestamp[0])
+		var basic request.Basic
+		_ = json.Unmarshal(bodyBytes, &basic)
+		dataJson, _ := json.Marshal(basic.Data)
+		dataJsonStr := string(dataJson)
+		timeStamp := basic.Timestamp
 		privateKey := manager.TP_SERVER_CONFIG.Auth.AuthBasic.PrivateKey
+
 		// token算法: 对称hash加密
 		// token = md5(md5(bodyStr) + privateKey + timestamp)
-		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(bodyStr), privateKey,
+		preStr := fmt.Sprintf("%s%s%s", utils.GetMD5Hash(dataJsonStr), privateKey,
 			strconv.Itoa(timeStamp))
 		genToken := utils.GetMD5Hash(preStr)
-
-		if genToken != header.Token[0] {
+		if genToken != basic.Token {
 			response.FailWithMessage("token error, this is a illegal action.", c)
 			manager.TP_LOG.Error("token error, this is a illegal action.",
-				zap.String("data", bodyStr),
-				zap.String("req-token", header.Token[0]),
+				zap.String("data", string(bodyBytes)),
+				zap.String("req-token", basic.Token),
 				zap.String("gen-token", genToken))
 
 			c.Abort()
 			return
 		}
 		c.Next()
+		fmt.Println("next auth basic...")
 	}
 }

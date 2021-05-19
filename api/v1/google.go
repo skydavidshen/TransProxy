@@ -6,24 +6,25 @@ import (
 	"TransProxy/model/response"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/mitchellh/mapstructure"
+	"log"
 )
 
 func InsertItem(c *gin.Context)  {
-	var item request.Item
-	_ = c.ShouldBindJSON(&item)
+	var basic request.Basic
+	_ = c.ShouldBindJSON(&basic)
 
+	var item request.Item
+	_ = mapstructure.Decode(basic.Data, &item)
 	errItem := manager.TP_VALIDATE.Struct(item)
 	if errItem != nil {
 		response.FailWithMessage("Request data invalid.", c)
-		manager.TP_LOG.Error("Request data invalid.",
-			zap.String("err", errItem.Error()),
-		)
-		c.Abort()
+		log.Println(errItem)
 		return
 	}
 
-	fmt.Println("controller: ", item)
+	fmt.Println("items: ", item)
 
 	response.OkWithMessage("insert item successfully.", c)
+	fmt.Println("after response")
 }

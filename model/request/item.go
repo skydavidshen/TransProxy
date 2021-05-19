@@ -7,9 +7,9 @@ package request
 // Source：来源平台，例如：vaffle, hg, dms
 
 type Item struct {
-	UUID     string `json:"uuid" validate:"required"`
-	Platform string `json:"platform" validate:"required"`
-	To       string `json:"to" validate:"required"`
-	Text     string `json:"text" validate:"required"`
-	Source   string `json:"source" validate:"required"`
+	UUID     string `json:"uuid" mapstructure:"uuid" validate:"required"`
+	Platform string `json:"platform" mapstructure:"platform" validate:"required"`
+	To       string `json:"to" mapstructure:"to" validate:"required"`
+	Text     string `json:"text" mapstructure:"text" validate:"required"`
+	Source   string `json:"source" mapstructure:"source" validate:"required"`
 }
