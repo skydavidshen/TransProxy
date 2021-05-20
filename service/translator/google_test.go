@@ -3,6 +3,7 @@ package translator
 import (
 	"TransProxy/model/request"
 	trans_platform "TransProxy/service/trans-platform"
+	"fmt"
 	"testing"
 )
 
@@ -15,7 +16,8 @@ func TestTranslateIpIdea(t *testing.T) {
 		Text: "武汉",
 		Source: "vaffle",
 	}
-	_ = google.Translate(item)
+	transItem, _ := google.Translate(item)
+	fmt.Println("transItem: ", transItem)
 }
 
 func TestTranslateSmartProxy(t *testing.T) {
@@ -27,7 +29,8 @@ func TestTranslateSmartProxy(t *testing.T) {
 		Text: "武汉",
 		Source: "vaffle",
 	}
-	_ = google.Translate(item)
+	transItem, _ := google.Translate(item)
+	fmt.Println("transItem: ", transItem)
 }
 
 

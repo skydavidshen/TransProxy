@@ -9,5 +9,5 @@ const contentType = "application/json"
 
 type Handler interface {
 	InsertItem(item request.Item) error
-	Translate(item request.Item) business.TranslateItem
+	Translate(item request.Item) (business.TranslateItem, error)
 }
