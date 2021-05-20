@@ -70,6 +70,7 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 		}
 		langItem.Lang = to
 		langItem.Text = transText
+		transItem.LangItem = append(transItem.LangItem, langItem)
 	}
 	return transItem, nil
 }
