@@ -5,7 +5,7 @@ import (
 	"TransProxy/model/request"
 )
 
-const contentType = "application/json"
+const ContentType = "application/json"
 
 type Handler interface {
 	InsertItem(item request.Item) error

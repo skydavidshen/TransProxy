@@ -8,7 +8,7 @@ import (
 )
 
 func TestTranslateIpIdea(t *testing.T) {
-	google := Google{platformHandler: &trans_platform.IpIdea{}}
+	google := &Google{PlatformHandler: &trans_platform.IpIdea{}}
 	item := request.Item {
 		UUID: "99a977b749fda07975953f52cff7e093",
 		To: "en,ja",
@@ -21,7 +21,7 @@ func TestTranslateIpIdea(t *testing.T) {
 }
 
 func TestTranslateSmartProxy(t *testing.T) {
-	google := Google{platformHandler: &trans_platform.SmartProxy{}}
+	google := &Google{PlatformHandler: &trans_platform.SmartProxy{}}
 	item := request.Item {
 		UUID: "99a977b749fda07975953f52cff7e093",
 		To: "en,ja",

@@ -11,7 +11,7 @@ const proxyHost = "gate.smartproxy.com:7000"
 
 type SmartProxy struct {}
 
-func (i *SmartProxy) ProxyUrl() *url2.URL {
+func (s SmartProxy) ProxyUrl() *url2.URL {
 	urlProxy := utils.BuildSmartProxyUrl(userName, password, proxyHost)
 	return urlProxy
 }

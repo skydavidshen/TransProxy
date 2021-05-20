@@ -20,3 +20,4 @@ log/*
 tmp/*
 tmp
 /tmp/
+config.yaml

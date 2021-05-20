@@ -1,15 +1,13 @@
 package translator
 
 import (
-	"TransProxy/lib/translateserve/googletranslate"
-	methodHandler "TransProxy/lib/translateserve/googletranslate/method"
+	"TransProxy/enum"
 	"TransProxy/manager"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
 	transPlatform "TransProxy/service/trans-platform"
 	"encoding/json"
 	"github.com/streadway/amqp"
-	"go.uber.org/zap"
 	"log"
 	"strings"
 )
@@ -18,7 +16,7 @@ const mqKey = "google"
 const exchange = "trans-items"
 
 type Google struct{
-	platformHandler transPlatform.Handler
+	PlatformHandler transPlatform.Handler
 }
 
 func (g *Google) InsertItem(item request.Item) error {
@@ -26,12 +24,12 @@ func (g *Google) InsertItem(item request.Item) error {
 	body, _ := json.Marshal(item)
 	err := ch.Publish(
 		exchange,
-		mqKey,
+		string(enum.Platform_Google),
 		false,
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			ContentType:  contentType,
+			ContentType:  ContentType,
 			Body:         body,
 		})
 	if err != nil {
@@ -54,7 +52,7 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 
 	for _, to := range toArr {
 		var langItem business.LangItem
-		urlProxy := g.platformHandler.ProxyUrl()
+		/*urlProxy := g.PlatformHandler.ProxyUrl()
 		translate := googletranslate.TranslationParams{
 			From:   "auto",
 			To:     to,
@@ -67,7 +65,9 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 				zap.Any("item", item),
 			)
 			return business.TranslateItem{}, err
-		}
+		}*/
+		transText := "test data"
+
 		langItem.Lang = to
 		langItem.Text = transText
 		transItem.LangItem = append(transItem.LangItem, langItem)

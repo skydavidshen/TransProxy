@@ -27,9 +27,9 @@ func InsertItem(c *gin.Context)  {
 
 	err := googleService.InsertItem(item)
 	if err != nil {
-		response.OkWithMessage("Failed to insert item.", c)
+		response.FailWithMessage("Failed to insert item.", c)
 		log.Println(err)
 		return
 	}
-	response.OkWithMessage("Insert item successfully.", c)
+	response.OkWithDetailed(item, "Insert item successfully.", c)
 }
