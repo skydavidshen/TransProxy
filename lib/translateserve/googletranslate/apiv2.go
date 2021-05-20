@@ -1,7 +1,7 @@
 package googletranslate
 
 import (
-	"TransProxy/lib/googletranslate/method"
+	method2 "TransProxy/lib/translateserve/googletranslate/method"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/text/language"
@@ -17,7 +17,7 @@ func init() {
 	ttk, _ = otto.ToValue("0")
 }
 
-func translate(text, from, to string, withVerification bool, method method.Method) (string, error) {
+func translate(text, from, to string, withVerification bool, method method2.Method) (string, error) {
 	if withVerification {
 		if _, err := language.Parse(from); err != nil && from != "auto" {
 			log.Println("[WARNING], '" + from + "' is a invalid language, switching to 'auto'")

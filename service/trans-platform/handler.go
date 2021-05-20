@@ -1,5 +1,7 @@
 package trans_platform
 
+import url2 "net/url"
+
 type Handler interface {
-	Translate(to, text string) (string, error)
+	ProxyUrl() *url2.URL
 }

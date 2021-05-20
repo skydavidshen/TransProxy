@@ -1,6 +1,8 @@
 package translator
 
 import (
+	"TransProxy/lib/translateserve/googletranslate"
+	methodHandler "TransProxy/lib/translateserve/googletranslate/method"
 	"TransProxy/manager"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
@@ -43,8 +45,15 @@ func (g *Google) InsertItem(item request.Item) error {
 func (g *Google) Translate(item request.Item) business.TranslateItem {
 	toArr := strings.Split(item.To, ",")
 	for _, to := range toArr {
-		result, err := g.platformHandler.Translate(to, item.Text)
-		fmt.Println("result: ", result)
+		urlProxy := g.platformHandler.ProxyUrl()
+		translate := googletranslate.TranslationParams{
+			From:   "auto",
+			To:     to,
+			Method: methodHandler.NewProxy(urlProxy),
+		}
+		transText, err := translate.Translate(item.Text)
+		
+		fmt.Println("result: ", transText)
 		fmt.Println("err: ", err)
 	}
 	return business.TranslateItem{}

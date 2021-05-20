@@ -1,9 +1,8 @@
 package trans_platform
 
 import (
-	"TransProxy/lib/googletranslate"
-	"TransProxy/lib/googletranslate/method"
 	"TransProxy/utils"
+	url2 "net/url"
 )
 
 const userName = "sp9e3fd0b2"
@@ -12,13 +11,7 @@ const proxyHost = "gate.smartproxy.com:7000"
 
 type SmartProxy struct {}
 
-func (s *SmartProxy) Translate(to, text string) (string, error) {
+func (i *SmartProxy) ProxyUrl() *url2.URL {
 	urlProxy := utils.BuildSmartProxyUrl(userName, password, proxyHost)
-
-	translate := googletranslate.TranslationParams {
-		From:   "auto",
-		To:     to,
-		Method: method.NewProxy(urlProxy),
-	}
-	return translate.Translate(text)
+	return urlProxy
 }

@@ -1,8 +1,8 @@
 package googletranslate
 
 import (
-	"TransProxy/lib/googletranslate/method"
 	"TransProxy/lib/proxyip"
+	method2 "TransProxy/lib/translateserve/googletranslate/method"
 	"TransProxy/utils"
 	"fmt"
 	"testing"
@@ -15,10 +15,10 @@ func TestIpIdea(t *testing.T) {
 	for _, proxyIp := range proxyIps {
 		urlProxy := utils.BuildIpIdeaUrl(proxyIp.IP, proxyIp.Port)
 
-		translate := TranslationParams {
+		translate := TranslationParams{
 			From:   "auto",
 			To:     "en",
-			Method: method.NewProxy(urlProxy),
+			Method: method2.NewProxy(urlProxy),
 		}
 		result, err := translate.Translate("你好")
 		if err != nil {
@@ -32,10 +32,10 @@ func TestIpIdea(t *testing.T) {
 func TestSmartProxy(t *testing.T) {
 	urlProxy := utils.BuildSmartProxyUrl("sp9e3fd0b2", "12345678", "gate.smartproxy.com:7000")
 
-	translate := TranslationParams {
+	translate := TranslationParams{
 		From:   "auto",
 		To:     "en",
-		Method: method.NewProxy(urlProxy),
+		Method: method2.NewProxy(urlProxy),
 	}
 	result, err := translate.Translate("你好")
 	if err != nil {

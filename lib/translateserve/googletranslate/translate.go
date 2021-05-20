@@ -1,7 +1,7 @@
 package googletranslate
 
 import (
-	"TransProxy/lib/googletranslate/method"
+	methodHandler "TransProxy/lib/translateserve/googletranslate/method"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type TranslationParams struct {
 	Tries      int
 	Delay      time.Duration
 	GoogleHost string
-	Method     method.Method
+	Method     methodHandler.Method
 }
 
 func (t *TranslationParams) Translate(text string) (string, error) {
