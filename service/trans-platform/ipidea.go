@@ -11,7 +11,7 @@ const url = "http://tiqu.linksocket.com:81/abroad?num=1&type=2&lb=1&sb=0&flow=1&
 
 type IpIdea struct {}
 
-func (i IpIdea) Translate(to, text string) (string, error) {
+func (i *IpIdea) Translate(to, text string) (string, error) {
 	proxyIps := proxyip.NewIpIdea(url).GetProxy()
 	proxyIp := proxyIps[0]
 	urlProxy := utils.BuildIpIdeaUrl(proxyIp.IP, proxyIp.Port)
