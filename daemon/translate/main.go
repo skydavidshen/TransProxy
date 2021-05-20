@@ -20,6 +20,9 @@ import (
 const transItemQueue = "trans-item-1"
 const insertExchange = "insert-trans-items"
 
+// 使用多少个协程消费待翻译队列Items
+const goroutineCount = 10
+
 func main() {
 	// init manager
 	service.InitManager()
@@ -43,7 +46,7 @@ func main() {
 		defer mq.Close()
 	}
 
-	readItems(3)
+	readItems(goroutineCount)
 }
 
 func readItems(goCount int) {
@@ -65,8 +68,10 @@ func readItems(goCount int) {
 	println()
 	for i:=0; i < goCount; i++ {
 		go func(i int) {
+			goLog.Printf("Goroutine-%d start running ... \n", i)
+
 			for msg := range messages { // messages 是一个channel,从中取东西
-				goLog.Printf("User-%d: Received a message: %s\n", i, string(msg.Body))
+				goLog.Printf("Goroutine-%d: Received a message: %s\n", i, string(msg.Body))
 				var item request.Item
 				parseErr := json.Unmarshal(msg.Body, &item)
 				if parseErr != nil {
