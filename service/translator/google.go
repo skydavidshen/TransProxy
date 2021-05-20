@@ -21,6 +21,8 @@ type Google struct{
 
 func (g *Google) InsertItem(item request.Item) error {
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
+	defer ch.Close()
+
 	body, _ := json.Marshal(item)
 	err := ch.Publish(
 		exchange,
@@ -29,7 +31,7 @@ func (g *Google) InsertItem(item request.Item) error {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			ContentType:  ContentType,
+			ContentType:  enum.ContentType_Json,
 			Body:         body,
 		})
 	if err != nil {

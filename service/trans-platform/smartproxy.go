@@ -7,7 +7,7 @@ import (
 
 const userName = "sp9e3fd0b2"
 const password = "12345678"
-const proxyHost = "gate.smartproxy.com:7000"
+const proxyHost = "gate.dc.smartproxy.com:20001"
 
 type SmartProxy struct {}
 

@@ -1,14 +1,15 @@
 package config
 
 type ServerConf struct {
-	System System `mapstructure:"system" json:"system" yaml:"system"`
-	Auth   Auth   `mapstructure:"auth" json:"auth" yaml:"auth"`
-	Log    Log    `mapstructure:"log" json:"log" yaml:"log"`
-	Redis  Redis  `mapstructure:"redis" json:"redis" yaml:"redis"`
-	DB     DB     `mapstructure:"db" json:"db" yaml:"db"`
-	MQ     MQ     `mapstructure:"mq" json:"mq" yaml:"mq"`
-	OSS    OSS    `mapstructure:"oss" json:"oss" yaml:"oss"`
-	Proxy  Proxy  `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	System     System     `mapstructure:"system" json:"system" yaml:"system"`
+	Auth       Auth       `mapstructure:"auth" json:"auth" yaml:"auth"`
+	Log        Log        `mapstructure:"log" json:"log" yaml:"log"`
+	Redis      Redis      `mapstructure:"redis" json:"redis" yaml:"redis"`
+	DB         DB         `mapstructure:"db" json:"db" yaml:"db"`
+	MQ         MQ         `mapstructure:"mq" json:"mq" yaml:"mq"`
+	OSS        OSS        `mapstructure:"oss" json:"oss" yaml:"oss"`
+	Proxy      Proxy      `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	ThirdParty ThirdParty `mapstructure:"third-party" json:"third-party" yaml:"third-party"`
 }
 
 // System Node
@@ -95,5 +96,6 @@ type ThirdParty struct {
 }
 
 type ThirdPartyVaffle struct {
-	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
+	InsertTransItem string `mapstructure:"call-insert-trans" json:"call-insert-trans" yaml:"call-insert-trans"`
+	PrivateKey      string `mapstructure:"private-key" json:"private-key" yaml:"private-key"`
 }

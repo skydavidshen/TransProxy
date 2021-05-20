@@ -47,6 +47,10 @@ func main() {
 	}
 
 	readItems(goroutineCount)
+
+	// 让main阻塞，不退出
+	forever := make(chan bool)
+	<- forever
 }
 
 func readItems(goCount int) {
@@ -64,8 +68,9 @@ func readItems(goCount int) {
 		return
 	}
 
-	forever := make(chan bool)
 	println()
+
+	chInsert, _ := manager.TP_MQ_RABBIT.Channel()
 	for i:=0; i < goCount; i++ {
 		go func(i int) {
 			goLog.Printf("Goroutine-%d start running ... \n", i)
@@ -92,7 +97,7 @@ func readItems(goCount int) {
 				
 				goLog.Printf("transItem: %v\n", transItem)
 
-				insertErr := insertTransItem(transItem)
+				insertErr := insertTransItem(chInsert, transItem)
 				if insertErr != nil {
 					goLog.Printf("Insert trans item error: %v\n", insertErr)
 					continue
@@ -103,11 +108,9 @@ func readItems(goCount int) {
 			}
 		}(i)
 	}
-	<- forever
 }
 
-func insertTransItem(item business.TranslateItem) error {
-	ch, _ := manager.TP_MQ_RABBIT.Channel()
+func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
 	body, _ := json.Marshal(item)
 	err := ch.Publish(
 		insertExchange,
@@ -116,7 +119,7 @@ func insertTransItem(item business.TranslateItem) error {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			ContentType:  translatorHandler.ContentType,
+			ContentType:  enum.ContentType_Json,
 			Body:         body,
 		})
 	if err != nil {
