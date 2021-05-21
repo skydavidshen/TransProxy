@@ -96,6 +96,6 @@ type ThirdParty struct {
 }
 
 type ThirdPartyVaffle struct {
-	InsertTransItem string `mapstructure:"call-insert-trans" json:"call-insert-trans" yaml:"call-insert-trans"`
+	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
 	PrivateKey      string `mapstructure:"private-key" json:"private-key" yaml:"private-key"`
 }

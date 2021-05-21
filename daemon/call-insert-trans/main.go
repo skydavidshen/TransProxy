@@ -7,15 +7,15 @@ import (
 	"TransProxy/manager/db"
 	"TransProxy/manager/mq"
 	"TransProxy/model/business"
+	"TransProxy/model/request"
 	"TransProxy/service"
 	"TransProxy/utils"
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	goLog "log"
 	"net/http"
-	netUrl "net/url"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -77,17 +77,50 @@ func callInsertTransItem(goCount int) {
 
 				var item business.TranslateItem
 				_ = json.Unmarshal(msg.Body, &item)
-				_ = sendItem(item)
-				time.Sleep(1)
+				resp, err := sendItem(item)
+				goLog.Printf(string(resp))
+				if err != nil {
+					manager.TP_LOG.Error("call insert trans item error",
+						zap.String("err", err.Error()),
+					)
+					continue
+				}
+
+				check, errCheck := checkResp(resp)
+				goLog.Printf("check: %v ", check)
+				if errCheck != nil {
+					manager.TP_LOG.Error("call insert trans item response error",
+						zap.String("err", errCheck.Error()),
+					)
+					continue
+				}
 
 				//手动ack
-				//_ = msg.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+				if check {
+					_ = msg.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+				}
 			}
 		}(i)
 	}
 }
 
-func sendItem(item business.TranslateItem) error {
+func checkResp(resp []byte) (bool, error) {
+	var callInsertTransResp request.CallInsertTransResp
+	err := json.Unmarshal(resp, &callInsertTransResp)
+	if err != nil {
+		return false, err
+	}
+
+	if callInsertTransResp.Code == 0 {
+		return true, nil
+	} else {
+		return false, fmt.Errorf("%s", callInsertTransResp.Msg)
+	}
+}
+
+// 发送transItem 到 对应的source方，数据安全通过：对称加密
+// 加密方式：token = md5(md5(data) + privateKey + timestamp)
+func sendItem(item business.TranslateItem) ([]byte, error) {
 	var url string
 	var privateKey string
 
@@ -102,7 +135,7 @@ func sendItem(item business.TranslateItem) error {
 
 	itemJson, err := json.Marshal(item)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	itemJsonStr := string(itemJson)
 	timeStamp := time.Now().Unix()
@@ -113,13 +146,12 @@ func sendItem(item business.TranslateItem) error {
 		strconv.Itoa(int(timeStamp)))
 	genToken := utils.GetMD5Hash(preStr)
 
-	postData := netUrl.Values{
-		"token": {genToken},
-		"timestamp": {strconv.FormatInt(timeStamp,10)},
-		"data": {itemJsonStr},
+	data := map[string]interface{} {
+		"token": genToken,
+		"timestamp": strconv.FormatInt(timeStamp,10),
+		"data": item,
 	}
-	reqBody:= postData.Encode()
-	resp, _ := http.Post(url, enum.ContentType_Json, strings.NewReader(reqBody))
-	fmt.Println(resp)
-	return nil
+
+	resp, _ := utils.DoRequest(data, url, http.MethodPost)
+	return resp, nil
 }
