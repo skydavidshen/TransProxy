@@ -19,11 +19,6 @@ import (
 	"time"
 )
 
-var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem
-
-// 使用多少个协程消费待翻译队列Items
-var goroutineCount = manager.TP_SERVER_CONFIG.Handler.CallInsertTransItemGoroutineCount
-
 func main() {
 	// init manager
 	service.InitManager()
@@ -47,6 +42,8 @@ func main() {
 		defer mq.Close()
 	}
 
+	// 使用多少个协程消费待翻译队列Items
+	var goroutineCount = manager.TP_SERVER_CONFIG.Handler.CallInsertTransItemGoroutineCount
 	callInsertTransItem(goroutineCount)
 
 	// 让main阻塞，不退出
@@ -55,6 +52,7 @@ func main() {
 }
 
 func callInsertTransItem(goCount int) {
+	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
 	messages, err := ch.Consume(
 		transItemQueue,

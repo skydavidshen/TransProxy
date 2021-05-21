@@ -15,13 +15,12 @@ import (
 	"strings"
 )
 
-var exchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.TransItems
-
 type Google struct{
 	PlatformHandler transPlatform.Handler
 }
 
 func (g *Google) InsertItem(item request.Item) error {
+	var exchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.TransItems
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
 	defer ch.Close()
 

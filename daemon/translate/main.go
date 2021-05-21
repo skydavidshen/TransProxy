@@ -17,12 +17,6 @@ import (
 	goLog "log"
 )
 
-var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
-var insertExchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.InsertTransItems
-
-// 使用多少个协程消费待翻译队列Items
-var goroutineCount = manager.TP_SERVER_CONFIG.Handler.TransItemGoroutineCount
-
 func main() {
 	// init manager
 	service.InitManager()
@@ -46,6 +40,8 @@ func main() {
 		defer mq.Close()
 	}
 
+	// 使用多少个协程消费待翻译队列Items
+	var goroutineCount = manager.TP_SERVER_CONFIG.Handler.TransItemGoroutineCount
 	readItems(goroutineCount)
 
 	// 让main阻塞，不退出
@@ -54,6 +50,7 @@ func main() {
 }
 
 func readItems(goCount int) {
+	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
 	messages, err := ch.Consume(
 		transItemQueue,
@@ -111,6 +108,7 @@ func readItems(goCount int) {
 }
 
 func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
+	var insertExchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.InsertTransItems
 	body, _ := json.Marshal(item)
 	err := ch.Publish(
 		insertExchange,
