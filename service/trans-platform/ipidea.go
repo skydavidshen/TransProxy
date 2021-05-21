@@ -2,12 +2,13 @@ package trans_platform
 
 import (
 	"TransProxy/lib/proxyip"
+	"TransProxy/manager"
 	"TransProxy/model/business"
 	"TransProxy/utils"
 	url2 "net/url"
 )
 
-const url = "http://tiqu.linksocket.com:81/abroad?num=1&type=2&lb=1&sb=0&flow=1&regions=&port=1&n=0"
+var url = manager.TP_SERVER_CONFIG.TransPlatform.IpIdea.Url
 
 type IpIdea struct {}
 

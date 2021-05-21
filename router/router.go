@@ -2,13 +2,12 @@ package router
 
 import (
 	v1 "TransProxy/api/v1"
+	"TransProxy/enum"
 	"TransProxy/manager"
 	"TransProxy/router/middleware"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
-
-const devEnv = "dev"
 
 func Routers() *gin.Engine {
 	var router = gin.Default()
@@ -29,7 +28,7 @@ func Routers() *gin.Engine {
 }
 
 func useAuthBasic(proxyRouter *gin.RouterGroup) {
-	if manager.TP_SERVER_CONFIG.System.Env != devEnv {
+	if manager.TP_SERVER_CONFIG.System.Env != enum.Env_Dev {
 		proxyRouter.Use(middleware.AuthBasic())
 	}
 }

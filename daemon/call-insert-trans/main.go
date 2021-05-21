@@ -19,10 +19,10 @@ import (
 	"time"
 )
 
-const transItemQueue = "insert-trans-item-1"
+var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem
 
 // 使用多少个协程消费待翻译队列Items
-const goroutineCount = 10
+var goroutineCount = manager.TP_SERVER_CONFIG.Handler.CallInsertTransItemGoroutineCount
 
 func main() {
 	// init manager

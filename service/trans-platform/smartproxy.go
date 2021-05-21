@@ -1,13 +1,14 @@
 package trans_platform
 
 import (
+	"TransProxy/manager"
 	"TransProxy/utils"
 	url2 "net/url"
 )
 
-const userName = "sp9e3fd0b2"
-const password = "12345678"
-const proxyHost = "gate.dc.smartproxy.com:20001"
+var userName = manager.TP_SERVER_CONFIG.TransPlatform.SmartProxy.Username
+var password = manager.TP_SERVER_CONFIG.TransPlatform.SmartProxy.Password
+var proxyHost = manager.TP_SERVER_CONFIG.TransPlatform.SmartProxy.ProxyHost
 
 type SmartProxy struct {}
 

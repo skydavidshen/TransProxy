@@ -17,11 +17,11 @@ import (
 	goLog "log"
 )
 
-const transItemQueue = "trans-item-1"
-const insertExchange = "insert-trans-items"
+var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
+var insertExchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.InsertTransItems
 
 // 使用多少个协程消费待翻译队列Items
-const goroutineCount = 10
+var goroutineCount = manager.TP_SERVER_CONFIG.Handler.TransItemGoroutineCount
 
 func main() {
 	// init manager

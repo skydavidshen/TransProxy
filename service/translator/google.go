@@ -2,18 +2,20 @@ package translator
 
 import (
 	"TransProxy/enum"
+	"TransProxy/lib/translateserve/googletranslate"
+	methodHandler "TransProxy/lib/translateserve/googletranslate/method"
 	"TransProxy/manager"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
 	transPlatform "TransProxy/service/trans-platform"
 	"encoding/json"
 	"github.com/streadway/amqp"
+	"go.uber.org/zap"
 	"log"
 	"strings"
 )
 
-const mqKey = "google"
-const exchange = "trans-items"
+var exchange = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.TransItems
 
 type Google struct{
 	PlatformHandler transPlatform.Handler
@@ -54,22 +56,28 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 
 	for _, to := range toArr {
 		var langItem business.LangItem
-		/*urlProxy := g.PlatformHandler.ProxyUrl()
-		translate := googletranslate.TranslationParams{
-			From:   "auto",
-			To:     to,
-			Method: methodHandler.NewProxy(urlProxy),
-		}
-		transText, err := translate.Translate(item.Text)
-		if err != nil {
-			manager.TP_LOG.Error("Translate fail",
-				zap.String("err", err.Error()),
-				zap.Any("item", item),
-			)
-			return business.TranslateItem{}, err
-		}*/
-		transText := "test data"
+		var transText string
 
+		if manager.TP_SERVER_CONFIG.System.Env == enum.Env_Dev {
+			transText = "this is a test translate data..."
+		} else {
+			urlProxy := g.PlatformHandler.ProxyUrl()
+			translate := googletranslate.TranslationParams{
+				From:   "auto",
+				To:     to,
+				Method: methodHandler.NewProxy(urlProxy),
+			}
+
+			transResult, err := translate.Translate(item.Text)
+			transText = transResult
+			if err != nil {
+				manager.TP_LOG.Error("Translate fail",
+					zap.String("err", err.Error()),
+					zap.Any("item", item),
+				)
+				return business.TranslateItem{}, err
+			}
+		}
 		langItem.Lang = to
 		langItem.Text = transText
 		transItem.LangItem = append(transItem.LangItem, langItem)

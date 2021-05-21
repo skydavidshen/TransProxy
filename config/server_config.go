@@ -1,15 +1,16 @@
 package config
 
 type ServerConf struct {
-	System     System     `mapstructure:"system" json:"system" yaml:"system"`
-	Auth       Auth       `mapstructure:"auth" json:"auth" yaml:"auth"`
-	Log        Log        `mapstructure:"log" json:"log" yaml:"log"`
-	Redis      Redis      `mapstructure:"redis" json:"redis" yaml:"redis"`
-	DB         DB         `mapstructure:"db" json:"db" yaml:"db"`
-	MQ         MQ         `mapstructure:"mq" json:"mq" yaml:"mq"`
-	OSS        OSS        `mapstructure:"oss" json:"oss" yaml:"oss"`
-	Proxy      Proxy      `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
-	ThirdParty ThirdParty `mapstructure:"third-party" json:"third-party" yaml:"third-party"`
+	System        System        `mapstructure:"system" json:"system" yaml:"system"`
+	Auth          Auth          `mapstructure:"auth" json:"auth" yaml:"auth"`
+	Log           Log           `mapstructure:"log" json:"log" yaml:"log"`
+	Redis         Redis         `mapstructure:"redis" json:"redis" yaml:"redis"`
+	DB            DB            `mapstructure:"db" json:"db" yaml:"db"`
+	MQ            MQ            `mapstructure:"mq" json:"mq" yaml:"mq"`
+	OSS           OSS           `mapstructure:"oss" json:"oss" yaml:"oss"`
+	ThirdParty    ThirdParty    `mapstructure:"third-party" json:"third-party" yaml:"third-party"`
+	TransPlatform TransPlatform `mapstructure:"trans-platform" json:"trans-platform" yaml:"trans-platform"`
+	Handler       Handler       `mapstructure:"handler" json:"handler" yaml:"handler"`
 }
 
 // System Node
@@ -70,10 +71,26 @@ type MQ struct {
 }
 
 type MqRabbit struct {
-	Username     string `mapstructure:"username" json:"username" yaml:"username"`
-	Password     string `mapstructure:"password" json:"password" yaml:"password"`
-	Addr         string `mapstructure:"addr" json:"addr" yaml:"addr"`
-	DefaultVhost string `mapstructure:"default-vhost" json:"default-vhost" yaml:"default-vhost"`
+	Username     string         `mapstructure:"username" json:"username" yaml:"username"`
+	Password     string         `mapstructure:"password" json:"password" yaml:"password"`
+	Addr         string         `mapstructure:"addr" json:"addr" yaml:"addr"`
+	DefaultVhost string         `mapstructure:"default-vhost" json:"default-vhost" yaml:"default-vhost"`
+	Option       MqRabbitOption `mapstructure:"option" json:"option" yaml:"option"`
+}
+
+type MqRabbitOption struct {
+	Exchange MqRabbitOptionExchange `mapstructure:"exchange" json:"exchange" yaml:"exchange"`
+	Queue    MqRabbitOptionQueue    `mapstructure:"queue" json:"queue" yaml:"queue"`
+}
+
+type MqRabbitOptionExchange struct {
+	InsertTransItems string `mapstructure:"insert-trans-items" json:"insert-trans-items" yaml:"insert-trans-items"`
+	TransItems       string `mapstructure:"trans-items" json:"trans-items" yaml:"trans-items"`
+}
+
+type MqRabbitOptionQueue struct {
+	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
+	TransItem       string `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
 }
 
 // OSS Node
@@ -85,11 +102,6 @@ type OSSLocal struct {
 	Path string `mapstructure:"path" json:"path" yaml:"path"`
 }
 
-// Proxy Node
-type Proxy struct {
-	Url string `mapstructure:"url" json:"url" yaml:"url"`
-}
-
 // ThirdParty Node
 type ThirdParty struct {
 	ThirdPartyVaffle ThirdPartyVaffle `mapstructure:"vaffle" json:"vaffle" yaml:"vaffle"`
@@ -98,4 +110,26 @@ type ThirdParty struct {
 type ThirdPartyVaffle struct {
 	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
 	PrivateKey      string `mapstructure:"private-key" json:"private-key" yaml:"private-key"`
+}
+
+// TransPlatform Node
+type TransPlatform struct {
+	SmartProxy TransPlatformSmartProxy `mapstructure:"smartproxy" json:"smartproxy" yaml:"smartproxy"`
+	IpIdea     TransPlatformIpIdea     `mapstructure:"ipidea" json:"ipidea" yaml:"ipidea"`
+}
+
+type TransPlatformSmartProxy struct {
+	Username  string `mapstructure:"username" json:"username" yaml:"username"`
+	Password  string `mapstructure:"password" json:"password" yaml:"password"`
+	ProxyHost string `mapstructure:"proxy-host" json:"proxy-host" yaml:"proxy-host"`
+}
+
+type TransPlatformIpIdea struct {
+	Url string `mapstructure:"url" json:"url" yaml:"url"`
+}
+
+// Handler Node
+type Handler struct {
+	TransItemGoroutineCount           int `mapstructure:"transitem-goroutine-count" json:"transitem-goroutine-count" yaml:"transitem-goroutine-count"`
+	CallInsertTransItemGoroutineCount int `mapstructure:"call-insert-transitem-goroutine-count" json:"call-insert-transitem-goroutine-count" yaml:"call-insert-transitem-goroutine-count"`
 }
