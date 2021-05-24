@@ -26,13 +26,13 @@ log:
 # redis configuration
 redis:
   db: 0
-  addr: '127.0.0.1:6379'
+  addr: '172.100.10.81:6379'
   password: ''
 
 # db connect configuration
 db:
   mysql:
-    host: ''
+    host: '172.100.10.81'
     db-name: 'trans_proxy'
     username: 'root'
     password: 'root'

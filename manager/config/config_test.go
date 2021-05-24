@@ -2,6 +2,7 @@ package config
 
 import (
 	"TransProxy/manager"
+	"TransProxy/manager/log"
 	"fmt"
 	"github.com/smartystreets/goconvey/convey"
 	"os"
@@ -21,10 +22,18 @@ func TestConfLoad(t *testing.T) {
 	})
 }
 
+func TestConf(t *testing.T) {
+	fmt.Println("env", manager.TP_SERVER_CONFIG.System.Oss)
+}
+
 func TestMain(m *testing.M) {
 	fmt.Println("TestMain start")
 
 	//初始化测试环境
 	manager.TP_ROOT_DIR = rootDir
+	manager.TP_CONFIG = Viper()
+	//日志服务
+	manager.TP_LOG = log.Zap()
+
 	os.Exit(m.Run())
 }

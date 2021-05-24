@@ -4,6 +4,7 @@ import (
 	v1 "TransProxy/api/v1"
 	"TransProxy/enum"
 	"TransProxy/manager"
+	"TransProxy/model/response"
 	"TransProxy/router/middleware"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,11 @@ func Routers() *gin.Engine {
 	//ping
 	router.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "pong..")
+	})
+
+	//test
+	router.GET("/test", func(ctx *gin.Context) {
+		response.OkWithDetailed(manager.TP_SERVER_CONFIG.System.Oss, "test successfully.", ctx)
 	})
 
 	//insert item
