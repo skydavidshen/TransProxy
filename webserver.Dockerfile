@@ -19,6 +19,6 @@ ENTRYPOINT ./web-server
 
 
 # 打包镜像
-# docker build -t 844827150/trans-proxy:{版本号} -f Dockerfile .
+# docker build -t 844827150/trans-proxy:{版本号} -f webserver.Dockerfile .
 # 启动容器
 # docker run --name trans-proxy -d -p 8888:8888 844827150/trans-proxy:{版本号}

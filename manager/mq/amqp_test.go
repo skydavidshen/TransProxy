@@ -1,11 +1,13 @@
 package mq
 
 import (
-	"bytes"
+	"TransProxy/manager"
 	TPTesting "TransProxy/manager/testing"
+	"bytes"
 	"fmt"
 	"github.com/smartystreets/goconvey/convey"
 	"github.com/streadway/amqp"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"testing"
@@ -25,6 +27,13 @@ func TestConn(t *testing.T) {
 }
 
 func TestSetItem(t *testing.T) {
+	for i := 0; i < 1000; i++ {
+		setItem(i)
+	}
+}
+
+// 消息确认：发布消息消息确认机制
+func setItem(i int) {
 	conn, _ := amqp.Dial(url + vHost)
 	ch, err := conn.Channel()
 	defer ch.Close()
@@ -33,10 +42,14 @@ func TestSetItem(t *testing.T) {
 		fmt.Printf("amqp create channel fail, err: %s", err)
 	}
 
-	body := "david 31 student soft-engineer"
+	body := fmt.Sprintf("david 333 student soft-engineer: %d", i)
+	_ = ch.Confirm(false)
+	confirms := ch.NotifyPublish(make(chan amqp.Confirmation, 1)) // 处理确认逻辑
+	defer confirmOne(confirms, body) // 处理方法
+
 	err = ch.Publish(
-		"trans-items",
-		"google",
+		"acktest",
+		"acktest",
 		false,
 		false,
 		amqp.Publishing{
@@ -44,8 +57,25 @@ func TestSetItem(t *testing.T) {
 			ContentType: "text/plain",
 			Body: []byte(body),
 		})
+	log.Printf("amqp publish msg fail, err: %s", err)
 	if err != nil {
-		fmt.Printf("amqp publish msg fail, err: %s", err)
+		log.Printf("amqp publish msg fail, err: %s", err)
+	}
+	log.Printf("david 333 student soft-engineer: %d\n", i)
+
+	time.Sleep(time.Second * 3)
+}
+
+// 消息确认
+func confirmOne(confirms <-chan amqp.Confirmation, body string) {
+	if confirmed := <-confirms; confirmed.Ack {
+		fmt.Printf("confirmed delivery with ack confirmed: %d\n", confirmed.DeliveryTag)
+		manager.TP_LOG.Info("confirmed delivery with ack confirmed\n", zap.Uint64("tag", confirmed.DeliveryTag),
+			zap.String("body", body))
+	} else {
+		fmt.Printf("confirmed delivery no: %d\n", confirmed.DeliveryTag)
+		manager.TP_LOG.Info("confirmed delivery no\n", zap.Uint64("tag", confirmed.DeliveryTag),
+			zap.String("body", body))
 	}
 }
 
