@@ -12,6 +12,12 @@ import (
 
 func Routers() *gin.Engine {
 	var router = gin.Default()
+
+	// hello world
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.String(200, "Welcome to the translation service.")
+	})
+
 	//ping
 	router.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "pong..")
