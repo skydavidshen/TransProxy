@@ -8,20 +8,72 @@ import (
 	"TransProxy/utils"
 	"encoding/json"
 	"fmt"
+	"github.com/streadway/amqp"
 	"go.uber.org/zap"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+var retryMsg chan amqp.Delivery
+
+// 需要重试的消息队列池子
+var retryPool map[string]int
+
+// 进入死信队列的阈值：尝试{deadNum}次
+const deadNum = 5
 
 type CallInsertTrans struct {}
 
 func (c CallInsertTrans) DoTask() {
 	fmt.Println("Do task: CallInsertTrans...")
 
+	// 给变量分配内存，初始化
+	retryPool = make(map[string]int)
+	retryMsg = make(chan amqp.Delivery)
+
 	// 使用多少个协程消费待翻译队列Items
 	var goroutineCount = manager.TP_SERVER_CONFIG.Handler.CallInsertTransItemGoroutineCount
 	callInsertTransItem(goroutineCount)
+
+	// 接收retry message，并检查retry pool
+	go receiveDelivery()
+
+	go func() {
+		for {
+			log.Println("retryPool: " ,retryPool)
+			time.Sleep(time.Second * 1)
+		}
+	}()
+}
+
+func receiveDelivery() {
+	for msg := range retryMsg {
+		if _, ok := retryPool[msg.MessageId]; !ok {
+			retryPool[msg.MessageId] = 1
+		} else {
+			retryPool[msg.MessageId]++
+		}
+
+		var err error
+		if retryPool[msg.MessageId] >= deadNum {
+			err = msg.Nack(false, false)
+			if err == nil {
+				delete(retryPool, msg.MessageId)
+			}
+			log.Println("put msg to dead queue: ", string(msg.Body))
+		} else {
+			err = msg.Nack(false, true)
+			log.Println("msg try: ", string(msg.Body), "current num: ", retryPool[msg.MessageId])
+		}
+		// log err
+		if err != nil {
+			manager.TP_LOG.Error("receiveDelivery and Nack message fail",
+				zap.String("err", err.Error()),
+			)
+		}
+	}
 }
 
 func callInsertTransItem(goCount int) {
@@ -60,8 +112,11 @@ func callInsertTransItem(goCount int) {
 				check, errCheck := checkResp(resp)
 				manager.TP_LOG.Info(fmt.Sprintf("check: %v ", check))
 				if errCheck != nil {
-					_ = msg.Nack(false, true)
-					
+					// 塞入channel
+					retryMsg <- msg
+					log.Println("insert msg to retryMsg: ", string(msg.Body))
+					log.Println("insert msg to retryMsg MessageId: ", msg.MessageId)
+
 					fmt.Println("call insert trans item response error", errCheck)
 					manager.TP_LOG.Error("call insert trans item response error",
 						zap.String("err", errCheck.Error()),

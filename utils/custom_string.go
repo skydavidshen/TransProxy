@@ -1,6 +1,9 @@
 package utils
 
-import rand2 "math/rand"
+import (
+	gonanoid "github.com/matoous/go-nanoid/v2"
+	rand2 "math/rand"
+)
 
 func GetRandomString(n int) string {
 	str := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
@@ -10,4 +13,9 @@ func GetRandomString(n int) string {
 		result = append(result, bytes[rand2.Intn(len(bytes))])
 	}
 	return string(result)
+}
+
+func GenUUID() string {
+	id, _ := gonanoid.New(32)
+	return id
 }

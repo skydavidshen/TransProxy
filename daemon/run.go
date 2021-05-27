@@ -13,7 +13,7 @@ import (
 // 配置: 需要注册的daemon实现类
 var daemons = []daemon.Handler{
 	new(daemon.Translate),
-	//new(daemon.CallInsertTrans),
+	new(daemon.CallInsertTrans),
 }
 
 // daemon脚本，主脚本一直会阻塞，业务goroutine会根据自己实际情况独立coding

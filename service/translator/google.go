@@ -8,6 +8,7 @@ import (
 	"TransProxy/model/business"
 	"TransProxy/model/request"
 	transPlatform "TransProxy/service/trans-platform"
+	"TransProxy/utils"
 	"encoding/json"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
@@ -37,6 +38,7 @@ func (g *Google) InsertItem(item request.Item) error {
 			// Expiration 单位为 ms，1000ms = 1s
 			// 设置了expired可以防止程序本身故障导致重试次数计算不准，就算重试机制失效，通过消息超时也可以将超时消息塞入「死信队列」
 			Expiration: manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Expiration,
+			MessageId: utils.GenUUID(),
 		})
 	if err != nil {
 		log.Printf("amqp publish msg fail, err: %s", err)
