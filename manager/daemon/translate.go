@@ -1,14 +1,10 @@
-package main
+package daemon
 
 import (
 	"TransProxy/enum"
 	"TransProxy/manager"
-	"TransProxy/manager/cache"
-	"TransProxy/manager/db"
-	"TransProxy/manager/mq"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
-	"TransProxy/service"
 	transPlatform "TransProxy/service/trans-platform"
 	translatorHandler "TransProxy/service/translator"
 	"encoding/json"
@@ -16,36 +12,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func main() {
-	// init manager
-	service.InitManager()
+type Translate struct {}
 
-	//release db
-	if manager.TP_DB != nil {
-		//main函数结束之前关闭资源
-		defer db.Close()
-
-		//初始化表和数据
-		db.InitDB()
-	}
-
-	//release cache
-	if manager.TP_CACHE_REDIS != nil {
-		defer cache.Close()
-	}
-
-	//release mq
-	if manager.TP_MQ_RABBIT != nil {
-		defer mq.Close()
-	}
+func (t Translate) DoTask() {
+	fmt.Println("Do task: Translate...")
 
 	// 使用多少个协程消费待翻译队列Items
 	var goroutineCount = manager.TP_SERVER_CONFIG.Handler.TransItemGoroutineCount
 	readItems(goroutineCount)
-
-	// 让main阻塞，不退出
-	forever := make(chan bool)
-	<- forever
 }
 
 func readItems(goCount int) {
@@ -69,14 +43,14 @@ func readItems(goCount int) {
 	chInsert, _ := manager.TP_MQ_RABBIT.Channel()
 	for i:=0; i < goCount; i++ {
 		go func(i int) {
-			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... \n", i))
+			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... ", i))
 
 			for msg := range messages { // messages 是一个channel,从中取东西
-				manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d: Received a message: %s\n", i, string(msg.Body)))
+				manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d: Received a message: %s", i, string(msg.Body)))
 				var item request.Item
 				parseErr := json.Unmarshal(msg.Body, &item)
 				if parseErr != nil {
-					manager.TP_LOG.Info(fmt.Sprintf("parse json error: %v\n", parseErr))
+					manager.TP_LOG.Info(fmt.Sprintf("parse json error: %v", parseErr))
 					continue
 				}
 
@@ -91,11 +65,11 @@ func readItems(goCount int) {
 				}
 				transItem, _ := translator.Translate(item)
 
-				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v\n", transItem))
+				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v", transItem))
 
 				insertErr := insertTransItem(chInsert, transItem)
 				if insertErr != nil {
-					manager.TP_LOG.Info(fmt.Sprintf("Insert trans item error: %v\n", insertErr))
+					manager.TP_LOG.Info(fmt.Sprintf("Insert trans item error: %v", insertErr))
 					continue
 				}
 
@@ -125,3 +99,4 @@ func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
 	}
 	return nil
 }
+

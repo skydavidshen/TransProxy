@@ -14,4 +14,6 @@ type Nacos struct {
 	Scheme      string `mapstructure:"scheme" json:"scheme" yaml:"scheme"`
 	DataId      string `mapstructure:"data-id" json:"data-id" yaml:"data-id"`
 	Group       string `mapstructure:"group" json:"group" yaml:"group"`
+	Username       string `mapstructure:"username" json:"username" yaml:"username"`
+	Password       string `mapstructure:"password" json:"password" yaml:"password"`
 }

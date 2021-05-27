@@ -23,7 +23,7 @@ func TestConfLoad(t *testing.T) {
 }
 
 func TestConf(t *testing.T) {
-	fmt.Println("env", manager.TP_SERVER_CONFIG.System.Oss)
+	fmt.Println("env", manager.TP_SERVER_CONFIG.ThirdParty)
 }
 
 func TestMain(m *testing.M) {

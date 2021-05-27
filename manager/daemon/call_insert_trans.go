@@ -1,14 +1,10 @@
-package main
+package daemon
 
 import (
 	"TransProxy/enum"
 	"TransProxy/manager"
-	"TransProxy/manager/cache"
-	"TransProxy/manager/db"
-	"TransProxy/manager/mq"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
-	"TransProxy/service"
 	"TransProxy/utils"
 	"encoding/json"
 	"fmt"
@@ -18,36 +14,14 @@ import (
 	"time"
 )
 
-func main() {
-	// init manager
-	service.InitManager()
+type CallInsertTrans struct {}
 
-	//release db
-	if manager.TP_DB != nil {
-		//main函数结束之前关闭资源
-		defer db.Close()
-
-		//初始化表和数据
-		db.InitDB()
-	}
-
-	//release cache
-	if manager.TP_CACHE_REDIS != nil {
-		defer cache.Close()
-	}
-
-	//release mq
-	if manager.TP_MQ_RABBIT != nil {
-		defer mq.Close()
-	}
+func (c CallInsertTrans) DoTask() {
+	fmt.Println("Do task: CallInsertTrans...")
 
 	// 使用多少个协程消费待翻译队列Items
 	var goroutineCount = manager.TP_SERVER_CONFIG.Handler.CallInsertTransItemGoroutineCount
 	callInsertTransItem(goroutineCount)
-
-	// 让main阻塞，不退出
-	forever := make(chan bool)
-	<-forever
 }
 
 func callInsertTransItem(goCount int) {
@@ -68,9 +42,9 @@ func callInsertTransItem(goCount int) {
 
 	for i := 0; i < goCount; i++ {
 		go func(i int) {
-			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... \n", i))
+			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... ", i))
 			for msg := range messages {
-				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v\n", string(msg.Body)))
+				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v", string(msg.Body)))
 
 				var item business.TranslateItem
 				_ = json.Unmarshal(msg.Body, &item)

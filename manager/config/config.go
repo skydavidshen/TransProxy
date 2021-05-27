@@ -22,6 +22,8 @@ func GetConfigCenter() (string, error) {
 		CacheDir:            manager.TP_BASIC_CONFIG.Nacos.CacheDir,
 		RotateTime:          "1h",
 		MaxAge:              3,
+		Username:            manager.TP_BASIC_CONFIG.Nacos.Username,
+		Password:            manager.TP_BASIC_CONFIG.Nacos.Password,
 	}
 	serverConfigs := []constant.ServerConfig{
 		{
@@ -37,6 +39,8 @@ func GetConfigCenter() (string, error) {
 			ServerConfigs: serverConfigs,
 		})
 	if err != nil {
+		fmt.Println("create config center client fail:", err)
+
 		manager.TP_LOG.Error("create config center client fail",
 			zap.String("err", err.Error()))
 		return "", err
@@ -59,6 +63,8 @@ func GetConfigCenter() (string, error) {
 		DataId: dataId,
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {
+			fmt.Printf("config changed, dataId: %s, group: %s", dataId, group)
+
 			loadServerConf(data)
 			manager.TP_LOG.Info("config changed",
 				zap.String("dataId", dataId),
@@ -99,6 +105,7 @@ func Viper() *viper.Viper {
 	}
 
 	configCenter, errCenter := GetConfigCenter()
+
 	if errCenter != nil {
 		log.Println("Read center config yaml file failed, errCenter:", errCenter)
 		return nil
