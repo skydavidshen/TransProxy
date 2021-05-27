@@ -76,6 +76,7 @@ type MqRabbit struct {
 	Addr         string         `mapstructure:"addr" json:"addr" yaml:"addr"`
 	DefaultVhost string         `mapstructure:"default-vhost" json:"default-vhost" yaml:"default-vhost"`
 	Option       MqRabbitOption `mapstructure:"option" json:"option" yaml:"option"`
+	Expiration   string         `mapstructure:"expiration" json:"expiration" yaml:"expiration"`
 }
 
 type MqRabbitOption struct {

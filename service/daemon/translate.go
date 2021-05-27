@@ -12,7 +12,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type Translate struct {}
+type Translate struct{}
 
 func (t Translate) DoTask() {
 	fmt.Println("Do task: Translate...")
@@ -41,7 +41,7 @@ func readItems(goCount int) {
 	println()
 
 	chInsert, _ := manager.TP_MQ_RABBIT.Channel()
-	for i:=0; i < goCount; i++ {
+	for i := 0; i < goCount; i++ {
 		go func(i int) {
 			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... ", i))
 
@@ -69,6 +69,9 @@ func readItems(goCount int) {
 
 				insertErr := insertTransItem(chInsert, transItem)
 				if insertErr != nil {
+					fmt.Println("Insert trans item error: ", insertErr)
+					_ = msg.Nack(false, true)
+
 					manager.TP_LOG.Info(fmt.Sprintf("Insert trans item error: %v", insertErr))
 					continue
 				}
@@ -92,6 +95,9 @@ func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
 			DeliveryMode: amqp.Persistent,
 			ContentType:  enum.ContentType_Json,
 			Body:         body,
+			// Expiration 单位为 ms，1000ms = 1s
+			// 设置了expired可以防止程序本身故障导致重试次数计算不准，就算重试机制失效，通过消息超时也可以将超时消息塞入「死信队列」
+			Expiration:   manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Expiration,
 		})
 	if err != nil {
 		manager.TP_LOG.Info(fmt.Sprintf("amqp publish msg fail, err: %s", err))
@@ -99,4 +105,3 @@ func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
 	}
 	return nil
 }
-

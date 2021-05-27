@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-type Google struct{
+type Google struct {
 	PlatformHandler transPlatform.Handler
 }
 
@@ -34,6 +34,9 @@ func (g *Google) InsertItem(item request.Item) error {
 			DeliveryMode: amqp.Persistent,
 			ContentType:  enum.ContentType_Json,
 			Body:         body,
+			// Expiration 单位为 ms，1000ms = 1s
+			// 设置了expired可以防止程序本身故障导致重试次数计算不准，就算重试机制失效，通过消息超时也可以将超时消息塞入「死信队列」
+			Expiration: manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Expiration,
 		})
 	if err != nil {
 		log.Printf("amqp publish msg fail, err: %s", err)

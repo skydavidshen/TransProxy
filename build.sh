@@ -11,21 +11,20 @@ target_tag=${3:-""}
 repo=""
 docker=""
 
-if [ $job == "daemon-trans" ] || [ $job == "daemon-call" ]; then
+if [ $job == "daemon" ]; then
   repo="844827150/trans-proxy-${job}"
-  docker="daemon_by_one.Dockerfile"
-  docker build -t "$repo:$tag" --build-arg JOB=$job -f "$docker" .
+  docker="daemon.Dockerfile"
 else
   repo="844827150/trans-proxy-web-server"
   docker="webserver.Dockerfile"
-  docker build -t "$repo:$tag" -f "$docker" .
 fi
 
 if [ $target_tag == "" ]; then
     target_tag="latest"
 fi
 
-docker tag "$repo:$tag" "$repo:$target_tag" && docker push "$repo:$tag" && docker push "$repo:${target_tag}"
+docker build -t "$repo:$tag" -f "$docker" . && docker tag "$repo:$tag" "$repo:$target_tag"
+docker push "$repo:$tag" && docker push "$repo:${target_tag}"
 
 echo "build successfully."
 
@@ -36,4 +35,4 @@ echo "build successfully."
 #sh build.sh {tag}
 
 # 脚本执行 全路径
-#sh build.sh {tag} daemon-trans/daemon-call/web release/latest/develop/master
+#sh build.sh {tag} daemon/web release/latest/develop/master

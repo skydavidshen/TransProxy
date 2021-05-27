@@ -26,7 +26,7 @@ func Zap() (logger *zap.Logger) {
 	writerSyncer := getWriterSyncer()
 	logLevel := getLogLevel()
 	core := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), writerSyncer, logLevel)
-	
+
 	if logLevel == zap.DebugLevel || logLevel == zap.ErrorLevel {
 		logger = zap.New(core, zap.AddStacktrace(logLevel), zap.AddCaller())
 	} else {
