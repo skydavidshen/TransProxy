@@ -34,6 +34,8 @@ func main() {
 
 	//release mq
 	if manager.TP_MQ_RABBIT != nil {
+		// 初始化MQ
+		mq.InitMQ()
 		defer mq.Close()
 	}
 

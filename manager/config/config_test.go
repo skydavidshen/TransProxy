@@ -23,7 +23,7 @@ func TestConfLoad(t *testing.T) {
 }
 
 func TestConf(t *testing.T) {
-	fmt.Println("env", manager.TP_SERVER_CONFIG.ThirdParty)
+	fmt.Println("env", manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option)
 }
 
 func TestMain(m *testing.M) {

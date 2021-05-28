@@ -47,15 +47,32 @@ mq:
     password: 'transproxy'
     addr: '172.100.200.5:30608'
     default-vhost: 'transproxy'
-    expiration:    '3600000'     # 单位 ms，1000ms = 1s
+    expiration: '3600000'     # 单位 ms，1000ms = 1s
     option:
       exchange:
         insert-trans-items: 'insert-trans-items'
         trans-items: 'trans-items'
+        dead-insert-trans-items: 'dead.letter.insert-trans-items'
       queue:
-        insert-trans-item: 'insert-trans-item-1'
-        trans-item: 'trans-item-1'
-        dead-insert-trans-item: 'dead.letter.insert-trans-items'
+        insert-trans-item:
+          name: 'insert-trans-item-1'
+          bind:
+            - exchange: 'insert-trans-items'
+              key: 'google'
+            - exchange: 'insert-trans-items'
+              key: 'bing'
+        trans-item:
+          name: 'trans-item-1'
+          bind:
+            - exchange: 'trans-items'
+              key: 'google'
+            - exchange: 'trans-items'
+              key: 'bing'
+        dead-insert-trans-item:
+          name: 'dead.letter.insert-trans-items'
+          bind:
+            - exchange: 'dead-insert-trans-items'
+              key: 'dead'
 
 # oss connect configuration
 oss:

@@ -5,6 +5,7 @@ import (
 	TPTesting "TransProxy/manager/testing"
 	"bytes"
 	"fmt"
+	"github.com/mitchellh/mapstructure"
 	"github.com/smartystreets/goconvey/convey"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
@@ -14,7 +15,7 @@ import (
 	"time"
 )
 
-const url   = "amqp://transproxy:transproxy@172.100.200.5:30608/"
+const url = "amqp://transproxy:transproxy@172.100.200.5:30608/"
 const vHost = "transproxy"
 const queue = "trans-item-1"
 
@@ -24,6 +25,63 @@ func TestConn(t *testing.T) {
 	convey.Convey("connect rabbitmq", t, func() {
 		convey.So(conn, convey.ShouldNotBeNil)
 	})
+}
+
+func TestMap(t *testing.T) {
+	var exchangeMap map[string]string
+	_ = mapstructure.Decode(manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange, &exchangeMap)
+	fmt.Println(exchangeMap)
+}
+
+func TestExchangeDeclare(t *testing.T) {
+	conn, _ := amqp.Dial(url + vHost)
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	if err != nil {
+		panic(err)
+	}
+
+	err = ch.ExchangeDeclare(
+		"test.trans-items",
+		"direct",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	q, _ := ch.QueueDeclare(
+		"test.trans-item-1",
+		true,
+		false,
+		false, //exclusive为true: 连接关闭时会被删除，所以一般设为false
+		false,
+		nil,
+	)
+
+	err = ch.QueueBind(
+		q.Name,
+		"google",
+		"test.trans-items",
+		false,
+		nil,
+	)
+	err = ch.QueueBind(
+		q.Name,
+		"bing",
+		"test.trans-items",
+		false,
+		nil,
+	)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("create exchange and queue successfully.")
 }
 
 func TestSetItem(t *testing.T) {
@@ -45,7 +103,7 @@ func setItem(i int) {
 	body := fmt.Sprintf("david 333 student soft-engineer: %d", i)
 	_ = ch.Confirm(false)
 	confirms := ch.NotifyPublish(make(chan amqp.Confirmation, 1)) // 处理确认逻辑
-	defer confirmOne(confirms, body) // 处理方法
+	defer confirmOne(confirms, body)                              // 处理方法
 
 	err = ch.Publish(
 		"acktest",
@@ -54,8 +112,8 @@ func setItem(i int) {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			ContentType: "text/plain",
-			Body: []byte(body),
+			ContentType:  "text/plain",
+			Body:         []byte(body),
 		})
 	log.Printf("amqp publish msg fail, err: %s", err)
 	if err != nil {
@@ -100,7 +158,7 @@ func TestGetItem(t *testing.T) {
 
 	forever := make(chan bool)
 	go func() {
-		for d := range msgs {  // msgs 是一个channel,从中取东西
+		for d := range msgs { // msgs 是一个channel,从中取东西
 			log.Printf("Received a message: %s", d.Body)
 			dotCount := bytes.Count(d.Body, []byte(".")) // 统计d.Body中的"."的个数
 			t := time.Duration(dotCount)
@@ -108,10 +166,10 @@ func TestGetItem(t *testing.T) {
 			log.Printf("Done")
 
 			//手动ack
-			d.Ack(false)  // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+			d.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
 		}
 	}()
-	<- forever
+	<-forever
 }
 
 func TestMain(m *testing.M) {

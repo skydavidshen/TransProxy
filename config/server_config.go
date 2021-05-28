@@ -85,14 +85,25 @@ type MqRabbitOption struct {
 }
 
 type MqRabbitOptionExchange struct {
-	InsertTransItems string `mapstructure:"insert-trans-items" json:"insert-trans-items" yaml:"insert-trans-items"`
-	TransItems       string `mapstructure:"trans-items" json:"trans-items" yaml:"trans-items"`
+	InsertTransItems     string `mapstructure:"insert-trans-items" json:"insert-trans-items" yaml:"insert-trans-items"`
+	TransItems           string `mapstructure:"trans-items" json:"trans-items" yaml:"trans-items"`
+	DeadInsertTransItems string `mapstructure:"dead-insert-trans-items" json:"dead-insert-trans-items" yaml:"dead-insert-trans-items"`
 }
 
 type MqRabbitOptionQueue struct {
-	InsertTransItem     string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
-	TransItem           string `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
-	DeadInsertTransItem string `mapstructure:"dead-insert-trans-item" json:"dead-insert-trans-item" yaml:"dead-insert-trans-item"`
+	InsertTransItem     MqRabbitOptionQueueItem `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
+	TransItem           MqRabbitOptionQueueItem `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
+	DeadInsertTransItem MqRabbitOptionQueueItem `mapstructure:"dead-insert-trans-item" json:"dead-insert-trans-item" yaml:"dead-insert-trans-item"`
+}
+
+type MqRabbitOptionQueueItem struct {
+	Name  string                    `mapstructure:"name" json:"name" yaml:"name"`
+	Binds []MqRabbitOptionQueueBind `mapstructure:"bind" json:"bind" yaml:"bind"`
+}
+
+type MqRabbitOptionQueueBind struct {
+	Exchange string `mapstructure:"exchange" json:"exchange" yaml:"exchange"`
+	Key      string `mapstructure:"key" json:"key" yaml:"key"`
 }
 
 // OSS Node

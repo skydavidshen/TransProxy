@@ -25,7 +25,7 @@ func callDeadInsertTransItem(goCount int) {
 	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.DeadInsertTransItem
 	ch, _ := manager.TP_MQ_RABBIT.Channel()
 	messages, err := ch.Consume(
-		transItemQueue,
+		transItemQueue.Name,
 		"",
 		false,
 		true,
