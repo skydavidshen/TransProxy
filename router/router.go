@@ -18,21 +18,26 @@ func Routers() *gin.Engine {
 		ctx.String(200, "Welcome to the translation service.")
 	})
 
-	//ping
+	// ping
 	router.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "pong..")
 	})
 
-	//test
+	// test
 	router.GET("/test", func(ctx *gin.Context) {
 		response.OkWithDetailed(manager.TP_SERVER_CONFIG.System.Oss, "test successfully.", ctx)
 	})
 
-	//insert item
+
+	// 华丽分界线 ================ Business API =================================
+
 	googleProxyRouter := router.Group("google")
 	{
 		useAuthBasic(googleProxyRouter)
-		googleProxyRouter.POST("insert-item", v1.InsertItem)
+		// 异步请求翻译
+		googleProxyRouter.POST("async-translate", v1.AsyncTranslate)
+		// 同步请求翻译
+		googleProxyRouter.POST("translate", v1.Translate)
 	}
 
 	fmt.Println("Router register success.")

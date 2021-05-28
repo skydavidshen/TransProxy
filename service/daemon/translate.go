@@ -5,7 +5,6 @@ import (
 	"TransProxy/manager"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
-	transPlatform "TransProxy/service/trans-platform"
 	translatorHandler "TransProxy/service/translator"
 	"TransProxy/utils"
 	"encoding/json"
@@ -52,22 +51,19 @@ func readItems(goCount int) {
 				parseErr := json.Unmarshal(msg.Body, &item)
 				if parseErr != nil {
 					manager.TP_LOG.Info(fmt.Sprintf("parse json error: %v", parseErr))
+					_ = msg.Nack(false, true)
 					continue
 				}
 
-				var translator translatorHandler.Handler
-				// 使用哪个翻译平台可以根据实际情况替换
-				var platform transPlatform.Handler = transPlatform.SmartProxy{}
-				switch item.Platform {
-				case enum.Platform_Google:
-					translator = &translatorHandler.Google{PlatformHandler: platform}
-				case enum.Platform_Bing:
-					translator = &translatorHandler.Bing{PlatformHandler: platform}
+				transItem, transErr := translatorHandler.TranslateFromItem(item)
+				if transErr != nil {
+					_ = msg.Nack(false, true)
+
+					manager.TP_LOG.Info(fmt.Sprintf("Translate item error: %v", transErr))
+					continue
 				}
-				transItem, _ := translator.Translate(item)
 
 				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v", transItem))
-
 				insertErr := insertTransItem(chInsert, transItem)
 				if insertErr != nil {
 					fmt.Println("Insert trans item error: ", insertErr)
