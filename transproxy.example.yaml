@@ -1,0 +1,83 @@
+# TransProxy Global Configuration
+
+# system configuration
+system:
+  env-mode: 'dev'      # value: dev | prod
+  listen-addr: 8888
+  db: 'mysql'
+  oss: 'local'    # value: local | ali | aws
+
+# api接口安全性认证
+auth:
+  # 内部系统间调用：对称加密
+  basic:
+    private-key: '0YawE8IfRwHBzGQzo0cQD87B'
+  # 客户端调用：jwt
+  jwt:
+    signing-key: 'BzTASiwuiZNg0Ltjb55ZjtA8'
+    expires-time: 604800
+    buffer-time: 86400
+
+# 系统日志
+log:
+  director: 'log'
+  level: 'info'
+
+# redis configuration
+redis:
+  db: 0
+  addr: '172.100.200.9:30050'
+  password: ''
+
+# db connect configuration
+db:
+  mysql:
+    host: '172.100.200.9:31562'
+    db-name: 'trans_proxy'
+    username: 'root'
+    password: 'root'
+    max-idle-conns: 10
+    max-open-conns: 100
+    option: 'charset=utf8&parseTime=True&loc=Local'
+
+# MQ
+mq:
+  rabbitmq:
+    username: 'transproxy'
+    password: 'transproxy'
+    addr: '172.100.200.5:30608'
+    default-vhost: 'transproxy'
+    expiration:    '3600000'     # 单位 ms，1000ms = 1s
+    option:
+      exchange:
+        insert-trans-items: 'insert-trans-items'
+        trans-items: 'trans-items'
+      queue:
+        insert-trans-item: 'insert-trans-item-1'
+        trans-item: 'trans-item-1'
+        dead-insert-trans-item: 'dead.letter.insert-trans-items'
+
+# oss connect configuration
+oss:
+  local:
+    path: 'uploads/file'
+
+# 翻译平台相关配置
+trans-platform:
+  ipidea:
+    url: 'http://tiqu.linksocket.com:81/abroad?num=1&type=2&lb=1&sb=0&flow=1&regions=&port=1&n=0'
+  smartproxy:
+    username: 'sp9e3fd0b2'
+    password: '12345678'
+    proxy-host: 'gate.dc.smartproxy.com:20001'
+
+# 第三方服务接口请求参数
+third-party:
+  vaffle:
+    insert-trans-item: 'http://172.100.10.107:8081/insert-trans-items.php'
+    private-key: '0YawE8IfRwHBzGQzo0cQD99H'
+
+# 项目相关服务处理参数
+handler:
+  transitem-goroutine-count: 10
+  call-insert-transitem-goroutine-count: 10

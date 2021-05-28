@@ -37,6 +37,7 @@ func main() {
 		defer mq.Close()
 	}
 
+	manager.TP_LOG.Info("Run web server with endless, server is running...")
 	//Run web server with endless
 	server.Run()
 }

@@ -32,7 +32,9 @@ echo "build successfully."
 
 # 需要提前登录 docker login
 # 默认为: web
-#sh build.sh {tag}
+# sh build.sh {tag}
+# sh build.sh 1.1.2 daemon release
+# sh build.sh 1.1.2 web release
 
 # 脚本执行 全路径
 #sh build.sh {tag} daemon/web release/latest/develop/master
