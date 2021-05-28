@@ -16,6 +16,8 @@ import (
 	"time"
 )
 
+// 业务消息如果消费失败，会尝试{deadNum}次，如果依然处理失败，放入死信队列
+
 var retryMsg chan amqp.Delivery
 
 // 需要重试的消息队列池子
@@ -40,10 +42,11 @@ func (c CallInsertTrans) DoTask() {
 	// 接收retry message，并检查retry pool
 	go receiveDelivery()
 
+	// 定时打印「需要重试的消息队列池子」
 	go func() {
 		for {
 			log.Println("retryPool: " ,retryPool)
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Second * 10)
 		}
 	}()
 }
@@ -62,10 +65,8 @@ func receiveDelivery() {
 			if err == nil {
 				delete(retryPool, msg.MessageId)
 			}
-			log.Println("put msg to dead queue: ", string(msg.Body))
 		} else {
 			err = msg.Nack(false, true)
-			log.Println("msg try: ", string(msg.Body), "current num: ", retryPool[msg.MessageId])
 		}
 		// log err
 		if err != nil {
@@ -100,7 +101,7 @@ func callInsertTransItem(goCount int) {
 
 				var item business.TranslateItem
 				_ = json.Unmarshal(msg.Body, &item)
-				resp, err := sendItem(item)
+				resp, err := SendItem(item)
 				manager.TP_LOG.Info(fmt.Sprintf(string(resp)))
 				if err != nil {
 					manager.TP_LOG.Error("call insert trans item error",
@@ -109,18 +110,17 @@ func callInsertTransItem(goCount int) {
 					continue
 				}
 
-				check, errCheck := checkResp(resp)
+				check, errCheck := CheckResp(resp)
 				manager.TP_LOG.Info(fmt.Sprintf("check: %v ", check))
 				if errCheck != nil {
 					// 塞入channel
 					retryMsg <- msg
-					log.Println("insert msg to retryMsg: ", string(msg.Body))
-					log.Println("insert msg to retryMsg MessageId: ", msg.MessageId)
 
-					fmt.Println("call insert trans item response error", errCheck)
 					manager.TP_LOG.Error("call insert trans item response error",
 						zap.String("err", errCheck.Error()),
 					)
+
+					time.Sleep(time.Second * 3)
 					continue
 				}
 
@@ -133,7 +133,7 @@ func callInsertTransItem(goCount int) {
 	}
 }
 
-func checkResp(resp []byte) (bool, error) {
+func CheckResp(resp []byte) (bool, error) {
 	var callInsertTransResp request.CallInsertTransResp
 	err := json.Unmarshal(resp, &callInsertTransResp)
 	if err != nil {
@@ -147,9 +147,11 @@ func checkResp(resp []byte) (bool, error) {
 	}
 }
 
+
 // 发送transItem 到 对应的source方，数据安全通过：对称加密
 // 加密方式：token = md5(md5(data) + privateKey + timestamp)
-func sendItem(item business.TranslateItem) ([]byte, error) {
+
+func SendItem(item business.TranslateItem) ([]byte, error) {
 	var url string
 	var privateKey string
 

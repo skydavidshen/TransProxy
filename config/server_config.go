@@ -90,8 +90,9 @@ type MqRabbitOptionExchange struct {
 }
 
 type MqRabbitOptionQueue struct {
-	InsertTransItem string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
-	TransItem       string `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
+	InsertTransItem     string `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
+	TransItem           string `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
+	DeadInsertTransItem string `mapstructure:"dead-insert-trans-item" json:"dead-insert-trans-item" yaml:"dead-insert-trans-item"`
 }
 
 // OSS Node
