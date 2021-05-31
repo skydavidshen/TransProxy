@@ -38,3 +38,7 @@ echo "build successfully."
 
 # 脚本执行 全路径
 #sh build.sh {tag} daemon/web release/latest/develop/master
+
+# 执行应用程序, 编译完成之后，执行如下:
+# ./main {env}        # env: dev|prod
+
