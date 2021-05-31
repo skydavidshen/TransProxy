@@ -62,7 +62,7 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 		var langItem business.LangItem
 		var transText string
 
-		if manager.TP_SERVER_CONFIG.System.Env == enum.Env_Dev {
+		if manager.TP_ENV == enum.Env_Dev {
 			transText = "this is a test translate data..."
 		} else {
 			urlProxy := g.PlatformHandler.ProxyUrl()

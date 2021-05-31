@@ -2,7 +2,6 @@
 
 # system configuration
 system:
-  env-mode: 'dev'      # value: dev | prod
   listen-addr: 8888
   db: 'mysql'
   oss: 'local'    # value: local | ali | aws

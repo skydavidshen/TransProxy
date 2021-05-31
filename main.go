@@ -12,11 +12,12 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/manager/server"
 	"TransProxy/service"
+	"os"
 )
 
 func main() {
 	// init manager
-	service.InitManager()
+	service.InitManager(os.Args)
 
 	//release db
 	if manager.TP_DB != nil {

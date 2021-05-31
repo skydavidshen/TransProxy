@@ -20,4 +20,5 @@ var (
 	TP_BASIC_CONFIG  *config.BasicConfig
 	TP_MQ_RABBIT     *amqp.Connection
 	TP_VALIDATE      *validator.Validate
+	TP_ENV           string
 )

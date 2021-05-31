@@ -15,7 +15,6 @@ type ServerConf struct {
 
 // System Node
 type System struct {
-	Env  string `mapstructure:"env-mode" json:"env-mode" yaml:"env-mode"`
 	Addr int    `mapstructure:"listen-addr" json:"listen-addr" yaml:"listen-addr"`
 	Db   string `mapstructure:"db" json:"db" yaml:"db"`
 	Oss  string `mapstructure:"oss" json:"oss" yaml:"oss"`

@@ -45,7 +45,7 @@ func Routers() *gin.Engine {
 }
 
 func useAuthBasic(proxyRouter *gin.RouterGroup) {
-	if manager.TP_SERVER_CONFIG.System.Env != enum.Env_Dev {
+	if manager.TP_ENV != enum.Env_Dev {
 		proxyRouter.Use(middleware.AuthBasic())
 	}
 }

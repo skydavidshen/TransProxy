@@ -2,6 +2,7 @@ package config
 
 import (
 	"TransProxy/config"
+	"TransProxy/enum"
 	"TransProxy/manager"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
@@ -86,7 +87,11 @@ func loadServerConf(configCenter string) {
 
 func Viper() *viper.Viper {
 	v := viper.New()
-	v.SetConfigName("config")            // 设置文件名称（无后缀）
+	configName := "config"
+	if manager.TP_ENV == enum.Env_Prod {
+		configName = "config_prod"
+	}
+	v.SetConfigName(configName)            // 设置文件名称（无后缀）
 	v.SetConfigType("yaml")              // 设置后缀名 {"1.6以后的版本可以不设置该后缀"}
 	v.AddConfigPath(manager.TP_ROOT_DIR) // 设置文件所在路径
 	err := v.ReadInConfig()

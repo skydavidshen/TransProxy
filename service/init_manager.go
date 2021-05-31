@@ -1,6 +1,7 @@
 package service
 
 import (
+	"TransProxy/enum"
 	"TransProxy/manager"
 	"TransProxy/manager/cache"
 	"TransProxy/manager/config"
@@ -9,9 +10,24 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/utils"
 	"github.com/go-playground/validator/v10"
+	"os"
 )
 
-func InitManager() {
+func InitManager(args []string) {
+	manager.TP_ENV = enum.Env_Dev
+
+	if len(os.Args) > 1 {
+		// 设置当前执行环境
+		switch args[1] {
+		case enum.Env_Dev:
+			manager.TP_ENV = enum.Env_Dev
+		case enum.Env_Prod:
+			manager.TP_ENV = enum.Env_Prod
+		default:
+			manager.TP_ENV = enum.Env_Dev
+		}
+	}
+
 	//项目根目录
 	manager.TP_ROOT_DIR = utils.GetRootDir()
 	//配置文件处理服务:支持热修改

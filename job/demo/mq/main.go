@@ -8,11 +8,12 @@ import (
 	"TransProxy/service"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
+	"os"
 )
 
 func main() {
 	// init manager
-	service.InitManager()
+	service.InitManager(os.Args)
 
 	//release db
 	if manager.TP_DB != nil {

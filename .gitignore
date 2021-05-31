@@ -21,3 +21,4 @@ tmp/*
 tmp
 /tmp/
 config.yaml
+config_prod.yaml

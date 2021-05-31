@@ -8,6 +8,7 @@ import (
 	"TransProxy/service"
 	"TransProxy/service/daemon"
 	"fmt"
+	"os"
 )
 
 // 配置: 需要注册的daemon实现类
@@ -19,7 +20,7 @@ var daemons = []daemon.Handler{
 // daemon脚本，主脚本一直会阻塞，业务goroutine会根据自己实际情况独立coding
 func main() {
 	// init manager
-	service.InitManager()
+	service.InitManager(os.Args)
 
 	//release db
 	if manager.TP_DB != nil {

@@ -13,6 +13,7 @@ FROM alpine:latest
 WORKDIR /go/src/TransProxy
 COPY --from=0 /go/src/TransProxy/bin/web-server ./
 COPY --from=0 /go/src/TransProxy/config.yaml ./
+COPY --from=0 /go/src/TransProxy/config_prod.yaml ./
 
 EXPOSE 8888
 ENTRYPOINT ./web-server
