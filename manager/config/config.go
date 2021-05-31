@@ -16,6 +16,8 @@ import (
 )
 
 func GetConfigCenter() (string, error) {
+	fmt.Println(manager.TP_BASIC_CONFIG.Nacos)
+
 	clientConfig := constant.ClientConfig{
 		NamespaceId:         manager.TP_BASIC_CONFIG.Nacos.Namespace, // 如果需要支持多namespace，我们可以场景多个client,它们有不同的NamespaceId。当namespace是public时，此处填空字符串。
 		NotLoadCacheAtStart: true,
@@ -23,8 +25,8 @@ func GetConfigCenter() (string, error) {
 		CacheDir:            manager.TP_BASIC_CONFIG.Nacos.CacheDir,
 		RotateTime:          "1h",
 		MaxAge:              3,
-		Username:            manager.TP_BASIC_CONFIG.Nacos.Username,
-		Password:            manager.TP_BASIC_CONFIG.Nacos.Password,
+		//Username:            manager.TP_BASIC_CONFIG.Nacos.Username,
+		//Password:            manager.TP_BASIC_CONFIG.Nacos.Password,
 	}
 	serverConfigs := []constant.ServerConfig{
 		{
