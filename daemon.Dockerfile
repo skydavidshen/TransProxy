@@ -1,7 +1,6 @@
 FROM golang:alpine
 ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.io,direct
-ENV RUN_EVN=dev
 
 WORKDIR /go/src/TransProxy
 COPY . .
@@ -11,14 +10,13 @@ RUN mkdir bin \
 
 # alpine:latest: A minimal Docker image based on Alpine Linux, 因为编译后的可执行二进制文件，可以不需要golang
 FROM alpine:latest
-ENV RUN_EVN=dev
 
 WORKDIR /go/src/TransProxy
 COPY --from=0 /go/src/TransProxy/bin/run ./
 COPY --from=0 /go/src/TransProxy/config.yaml ./
 COPY --from=0 /go/src/TransProxy/config_prod.yaml ./
 
-ENTRYPOINT ./run $RUN_EVN
+ENTRYPOINT ./run
 
 
 # 打包镜像
