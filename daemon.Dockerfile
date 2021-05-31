@@ -16,7 +16,7 @@ COPY --from=0 /go/src/TransProxy/bin/run ./
 COPY --from=0 /go/src/TransProxy/config.yaml ./
 COPY --from=0 /go/src/TransProxy/config_prod.yaml ./
 
-ENTRYPOINT ./run
+ENTRYPOINT ["./run"]
 
 
 # 打包镜像
