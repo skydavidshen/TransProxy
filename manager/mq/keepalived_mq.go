@@ -13,6 +13,7 @@ import (
 // 2. goroutine 协程使用
 // 3. channel使用，并且使用select方法进行调度
 // 4. rabbitMQ 链接重试机制
+// 5. 使用了很多递归和无限循环，递归和无限循环的控制是关键点
 
 const monitorNotifyCloseTime = 3 //单位 s
 const renewConnTime = 3          //单位 s
@@ -33,8 +34,8 @@ func MonitorConn(conn *amqp.Connection) {
 			log.Printf("amqp.Connection communication error: %s", e.Error())
 			RenewConn("notifyClose")
 			flag = true
-		default:
-			log.Println("MonitorConn loop..., IsClosed: ", conn.IsClosed())
+		//default:
+		//	log.Println("MonitorConn loop..., IsClosed: ", conn.IsClosed())
 		}
 		if flag {
 			break
@@ -59,7 +60,9 @@ func RenewConn(source string) {
 		time.Sleep(time.Second * renewConnTime)
 		log.Println("RenewConn sleep 3 second.")
 		RenewConn(source)
+		return
 	}
+	log.Println("RenewConn success...")
 }
 
 func GenChannel() *amqp.Channel {
@@ -67,11 +70,11 @@ func GenChannel() *amqp.Channel {
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Println("conn.Channel fail.", zap.Any("error", err))
-		for {
-			GenChannel()
-			time.Sleep(time.Second * 3)
-		}
+		time.Sleep(time.Second * 3)
+		log.Println("GenChannel wait 3 seconds...")
+		return GenChannel()
 	}
+	log.Println("GenChannel success...")
 	return ch
 }
 
@@ -93,8 +96,8 @@ func MonitorChannel(ch *amqp.Channel, handle NotifyCloseChannelCallBack) {
 			}
 			handle(e)
 			flag = true
-		default:
-			log.Println("MonitorChannel loop...")
+		//default:
+		//	log.Println("MonitorChannel loop...")
 		}
 		if flag {
 			break

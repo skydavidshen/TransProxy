@@ -3,6 +3,7 @@ package daemon
 import (
 	"TransProxy/enum"
 	"TransProxy/manager"
+	"TransProxy/manager/mq"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
 	translatorHandler "TransProxy/service/translator"
@@ -10,9 +11,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
+	"log"
 )
 
 type Translate struct{}
+
+var retryCount = 0
+
+const retryMaxCount = 5
 
 func (t Translate) DoTask() {
 	fmt.Println("Do task: Translate...")
@@ -23,8 +29,26 @@ func (t Translate) DoTask() {
 }
 
 func readItems(goCount int) {
+	// defer ch.Close() 不能在该方法执行，因为，所有的处理消息队列都是通过goroutine(协程)处理的，所以，readItems方法很快会结束
+	// 如果readItems结束之后就ch.Close()，那么，协程处理的业务，就会出问题，channel不存在。
+
+	log.Println("readItems start ...", "retry: ", retryCount)
+	retryCount++
 	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
-	ch, _ := manager.TP_MQ_RABBIT.Channel()
+	ch := mq.GenChannel()
+
+	go mq.MonitorChannel(ch, func(data interface{}) {
+		// close channel导致的错误，这是正常的，此时data == nil
+		log.Printf("Case default - MonitorChannel communication message: %v", data)
+		if retryCount > retryMaxCount {
+			panic(fmt.Sprintf("Case amqp.Error - MonitorChannel communication error: %v", data))
+		} else {
+			readItems(goCount)
+		}
+	})
+
+	println()
+
 	messages, err := ch.Consume(
 		transItemQueue.Name,
 		"",
@@ -38,15 +62,16 @@ func readItems(goCount int) {
 		return
 	}
 
-	println()
-
 	chInsert, _ := manager.TP_MQ_RABBIT.Channel()
 	for i := 0; i < goCount; i++ {
 		go func(i int) {
 			manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d start running ... ", i))
+			log.Println(fmt.Sprintf("Goroutine-%d start running ... ", i))
 
 			for msg := range messages { // messages 是一个channel,从中取东西
 				manager.TP_LOG.Info(fmt.Sprintf("Goroutine-%d: Received a message: %s", i, string(msg.Body)))
+				log.Println(fmt.Sprintf("Goroutine-%d: Received a message: %s", i, string(msg.Body)))
+
 				var item request.Item
 				parseErr := json.Unmarshal(msg.Body, &item)
 				if parseErr != nil {
@@ -74,10 +99,13 @@ func readItems(goCount int) {
 				}
 
 				//手动ack
-				_ = msg.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+				errAck := msg.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+				log.Println("ack success", string(msg.Body), "errAck: ", errAck)
 			}
+			log.Println("goroutine-readItems done ..., i: ", i)
 		}(i)
 	}
+	log.Println("readItems done ...")
 }
 
 func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {

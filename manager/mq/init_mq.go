@@ -32,7 +32,7 @@ func doInit(ch *amqp.Channel) {
 			log.Printf("Case default - MonitorChannel communication message: %v", data)
 		}
 	})
-	
+
 	log.Println("doInit start...")
 	var errors []error
 	var err error
