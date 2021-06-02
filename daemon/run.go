@@ -45,7 +45,7 @@ func main() {
 	for _, item := range daemons {
 		go item.DoTask()
 	}
-	
+
 	log.Println("Daemon script is running, and it is blocking...")
 	// 阻塞脚本, 等待业务代码执行完成后退出
 	block := make(chan bool)

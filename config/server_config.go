@@ -87,12 +87,14 @@ type MqRabbitOption struct {
 type MqRabbitOptionExchange struct {
 	InsertTransItems     string `mapstructure:"insert-trans-items" json:"insert-trans-items" yaml:"insert-trans-items"`
 	TransItems           string `mapstructure:"trans-items" json:"trans-items" yaml:"trans-items"`
+	DeadTransItems       string `mapstructure:"dead-trans-items" json:"dead-trans-items" yaml:"dead-trans-items"`
 	DeadInsertTransItems string `mapstructure:"dead-insert-trans-items" json:"dead-insert-trans-items" yaml:"dead-insert-trans-items"`
 }
 
 type MqRabbitOptionQueue struct {
 	InsertTransItem     MqRabbitOptionQueueItem `mapstructure:"insert-trans-item" json:"insert-trans-item" yaml:"insert-trans-item"`
 	TransItem           MqRabbitOptionQueueItem `mapstructure:"trans-item" json:"trans-item" yaml:"trans-item"`
+	DeadTransItem       MqRabbitOptionQueueItem `mapstructure:"dead-trans-item" json:"dead-trans-item" yaml:"dead-trans-item"`
 	DeadInsertTransItem MqRabbitOptionQueueItem `mapstructure:"dead-insert-trans-item" json:"dead-insert-trans-item" yaml:"dead-insert-trans-item"`
 }
 

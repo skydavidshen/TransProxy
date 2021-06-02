@@ -7,7 +7,6 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/service"
 	"github.com/mitchellh/mapstructure"
-	"go.uber.org/zap"
 	"os"
 )
 
@@ -45,13 +44,13 @@ func main() {
 		_ = mq.GenExchange(ch, exchange)
 	}
 
-	_ = mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem)
-	_ = mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem)
-	err := mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.DeadInsertTransItem)
-
-	if err != nil {
-		manager.TP_LOG.Error("Build Exchange and Queue fail.", zap.Any("error", err))
-	}
+	//_ = mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem)
+	//_ = mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem)
+	//err := mq.GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.DeadInsertTransItem)
+	//
+	//if err != nil {
+	//	manager.TP_LOG.Error("Build Exchange and Queue fail.", zap.Any("error", err))
+	//}
 	manager.TP_LOG.Info("Create Exchange and Queue successfully.")
 
 }
