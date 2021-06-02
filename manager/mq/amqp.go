@@ -3,23 +3,20 @@ package mq
 import (
 	"TransProxy/manager"
 	"bytes"
-	"fmt"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
 )
 
-func Amqp(vHost string) *amqp.Connection {
+func Amqp(vHost string) (*amqp.Connection, error) {
 	url := getDsn(vHost)
 	conn, err := amqp.Dial(url)
 	if err != nil {
-		fmt.Println(err)
-
 		manager.TP_LOG.Error("amqp rabbit mq connect failed, err:",
 			zap.String("url", url),
 			zap.String("err", err.Error()))
-		return nil
+		return nil, err
 	}
-	return conn
+	return conn, nil
 }
 
 // vHost: rabbitMq virtual host

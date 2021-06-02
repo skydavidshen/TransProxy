@@ -6,12 +6,15 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
+	"log"
 )
 
 func InitMQ() {
 	conn := manager.TP_MQ_RABBIT
-	ch, _ := conn.Channel()
-	defer conn.Close()
+	ch, err := conn.Channel()
+	if err != nil {
+		log.Println("Build Exchange and Queue fail.", zap.Any("error", err))
+	}
 	defer ch.Close()
 
 	var exchangeMap map[string]string
@@ -19,13 +22,18 @@ func InitMQ() {
 	for _, exchange := range exchangeMap {
 		_ = GenExchange(ch, exchange)
 	}
-	_ = GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem)
-	_ = GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem)
-	err := GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.DeadInsertTransItem)
+
+	_ = GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem, nil)
+	_ = GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem,
+		map[string]interface{}{
+			"x-dead-letter-exchange":    manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Exchange.DeadInsertTransItems,
+			"x-dead-letter-routing-key": "dead",
+		})
+	err = GenQueue(ch, manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.DeadInsertTransItem, nil)
 	if err != nil {
 		manager.TP_LOG.Error("Build Exchange and Queue fail.", zap.Any("error", err))
+		log.Println("Build Exchange and Queue fail.", zap.Any("error", err))
 	}
-	manager.TP_LOG.Info("Create Exchange and Queue successfully.")
 }
 
 func GenExchange(ch *amqp.Channel, name string) error {
@@ -41,14 +49,14 @@ func GenExchange(ch *amqp.Channel, name string) error {
 	return err
 }
 
-func GenQueue(ch *amqp.Channel, Item config.MqRabbitOptionQueueItem) error {
+func GenQueue(ch *amqp.Channel, Item config.MqRabbitOptionQueueItem, args amqp.Table) error {
 	q, _ := ch.QueueDeclare(
 		Item.Name,
 		true,
 		false,
 		false, //exclusive为true: 连接关闭时会被删除，所以一般设为false
 		false,
-		nil,
+		args,
 	)
 
 	var err error
@@ -63,4 +71,3 @@ func GenQueue(ch *amqp.Channel, Item config.MqRabbitOptionQueueItem) error {
 	}
 	return err
 }
-

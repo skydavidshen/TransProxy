@@ -87,7 +87,7 @@ func loadServerConf(configCenter string) {
 	manager.TP_SERVER_CONFIG = &serverConf
 }
 
-func Viper() *viper.Viper {
+func Viper() (*viper.Viper, error) {
 	v := viper.New()
 	configName := "config"
 	if manager.TP_ENV == enum.Env_Prod {
@@ -99,7 +99,7 @@ func Viper() *viper.Viper {
 	err := v.ReadInConfig()
 	if err != nil {
 		log.Println("Fatal error config file:", err)
-		return nil
+		return nil, err
 	}
 	v.WatchConfig()
 	v.OnConfigChange(func(e fsnotify.Event) {
@@ -108,16 +108,16 @@ func Viper() *viper.Viper {
 	//服务配置文件config.yaml加载入对象
 	if errBasicConf := v.Unmarshal(&manager.TP_BASIC_CONFIG); errBasicConf != nil {
 		log.Println("Read basic config yaml file failed, errBasicConf:", errBasicConf)
-		return nil
+		return nil, errBasicConf
 	}
 
 	configCenter, errCenter := GetConfigCenter()
 
 	if errCenter != nil {
 		log.Println("Read center config yaml file failed, errCenter:", errCenter)
-		return nil
+		return nil, errCenter
 	}
 
 	loadServerConf(configCenter)
-	return v
+	return v, nil
 }

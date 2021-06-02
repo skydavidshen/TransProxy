@@ -29,7 +29,7 @@ func readItems(goCount int) {
 		transItemQueue.Name,
 		"",
 		false,
-		true,
+		false,
 		false,
 		false,
 		nil)

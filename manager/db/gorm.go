@@ -1,14 +1,14 @@
 package db
 
 import (
-	"bytes"
 	"TransProxy/manager"
+	"bytes"
 	"fmt"
 	mysqldriver "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-func Gorm() *gorm.DB {
+func Gorm() (*gorm.DB, error) {
 	dbConfig := manager.TP_SERVER_CONFIG.System.Db
 	switch dbConfig {
 	case "mysql":
@@ -18,7 +18,7 @@ func Gorm() *gorm.DB {
 	}
 }
 
-func mysql() *gorm.DB {
+func mysql() (*gorm.DB, error) {
 	config := mysqldriver.Config{
 		DSN: getDsn(),         // DSN data source name
 		DefaultStringSize: 180,
@@ -29,12 +29,15 @@ func mysql() *gorm.DB {
 	}
 
 	if db, err := gorm.Open(mysqldriver.New(config)); err != nil {
-		return nil
+		return nil, err
 	} else {
-		sql, _ := db.DB()
+		sql, errDB := db.DB()
+		if errDB != nil {
+			return nil, errDB
+		}
 		sql.SetMaxIdleConns(manager.TP_SERVER_CONFIG.DB.Mysql.MaxIdleConn)
 		sql.SetMaxOpenConns(manager.TP_SERVER_CONFIG.DB.Mysql.MaxOpenConn)
-		return db
+		return db, nil
 	}
 }
 

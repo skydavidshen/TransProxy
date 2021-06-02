@@ -12,6 +12,7 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/manager/server"
 	"TransProxy/service"
+	"log"
 	"os"
 )
 
@@ -40,7 +41,7 @@ func main() {
 		defer mq.Close()
 	}
 
-	manager.TP_LOG.Info("Run web server with endless, server is running...")
+	log.Println("Run web server with endless, server is running...")
 	//Run web server with endless
 	server.Run()
 }

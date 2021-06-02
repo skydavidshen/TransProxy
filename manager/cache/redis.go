@@ -2,12 +2,12 @@ package cache
 
 import (
 	"TransProxy/manager"
-	"fmt"
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
+	"log"
 )
 
-func Redis() *redis.Client {
+func Redis() (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr: manager.TP_SERVER_CONFIG.Redis.Addr,
 		Password: manager.TP_SERVER_CONFIG.Redis.Password,
@@ -16,10 +16,10 @@ func Redis() *redis.Client {
 
 	pong, err := client.Ping().Result()
 	if err != nil {
-		panic(fmt.Errorf("Redis connect ping failed, err: %s \n", err))
+		return nil, err
 	} else {
-		fmt.Printf("redis connect ping response: %s", pong)
-		return client
+		log.Printf("redis connect ping response: %s", pong)
+		return client, nil
 	}
 }
 

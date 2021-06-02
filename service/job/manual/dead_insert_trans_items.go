@@ -28,7 +28,7 @@ func callDeadInsertTransItem(goCount int) {
 		transItemQueue.Name,
 		"",
 		false,
-		true,
+		false,
 		false,
 		false,
 		nil)

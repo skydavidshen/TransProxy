@@ -20,12 +20,12 @@ func NEW() *Testing {
 
 func (t *Testing) Init() {
 	manager.TP_ROOT_DIR = t.RootDir
-	manager.TP_CONFIG = config.Viper()
+	manager.TP_CONFIG, _ = config.Viper()
 }
 
 func (t *Testing) InitConfig() {
 	manager.TP_ROOT_DIR = t.RootDir
-	manager.TP_CONFIG = config.Viper()
+	manager.TP_CONFIG, _ = config.Viper()
 	//日志服务
 	manager.TP_LOG = log.Zap()
 }

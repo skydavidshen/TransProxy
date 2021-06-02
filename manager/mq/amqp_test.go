@@ -147,7 +147,7 @@ func TestGetItem(t *testing.T) {
 		queue,
 		"",
 		false,
-		true,
+		false,
 		false,
 		false,
 		nil)

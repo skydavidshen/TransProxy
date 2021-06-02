@@ -2,7 +2,6 @@ package router
 
 import (
 	v1 "TransProxy/api/v1"
-	"TransProxy/enum"
 	"TransProxy/manager"
 	"TransProxy/model/response"
 	"TransProxy/router/middleware"
@@ -45,7 +44,7 @@ func Routers() *gin.Engine {
 }
 
 func useAuthBasic(proxyRouter *gin.RouterGroup) {
-	if manager.TP_ENV != enum.Env_Dev {
+	if manager.TP_SERVER_CONFIG.Switch.AuthBasic {
 		proxyRouter.Use(middleware.AuthBasic())
 	}
 }

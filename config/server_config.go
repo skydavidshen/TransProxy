@@ -11,6 +11,7 @@ type ServerConf struct {
 	ThirdParty    ThirdParty    `mapstructure:"third-party" json:"third-party" yaml:"third-party"`
 	TransPlatform TransPlatform `mapstructure:"trans-platform" json:"trans-platform" yaml:"trans-platform"`
 	Handler       Handler       `mapstructure:"handler" json:"handler" yaml:"handler"`
+	Switch        Switch        `mapstructure:"switch" json:"switch" yaml:"switch"`
 }
 
 // System Node
@@ -144,4 +145,10 @@ type TransPlatformIpIdea struct {
 type Handler struct {
 	TransItemGoroutineCount           int `mapstructure:"transitem-goroutine-count" json:"transitem-goroutine-count" yaml:"transitem-goroutine-count"`
 	CallInsertTransItemGoroutineCount int `mapstructure:"call-insert-transitem-goroutine-count" json:"call-insert-transitem-goroutine-count" yaml:"call-insert-transitem-goroutine-count"`
+}
+
+// Switch Node
+type Switch struct {
+	AuthBasic        bool `mapstructure:"auth-basic" json:"auth-basic" yaml:"auth-basic"`
+	UseRealTranslate bool `mapstructure:"use-real-translate" json:"use-real-translate" yaml:"use-real-translate"`
 }

@@ -7,7 +7,7 @@ import (
 	"TransProxy/manager/mq"
 	"TransProxy/service"
 	"TransProxy/service/daemon"
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -37,16 +37,17 @@ func main() {
 	}
 
 	//release mq
-	if manager.TP_MQ_RABBIT != nil {
+	if manager.TP_MQ_RABBIT.IsClosed() == false {
 		defer mq.Close()
 	}
 
+	// 执行业务daemon task
 	for _, item := range daemons {
 		go item.DoTask()
 	}
-
-	fmt.Println("Daemon script is running, and it is blocking...")
-	// 阻塞整个脚本，不退出
+	
+	log.Println("Daemon script is running, and it is blocking...")
+	// 阻塞脚本, 等待业务代码执行完成后退出
 	block := make(chan bool)
 	<-block
 }
