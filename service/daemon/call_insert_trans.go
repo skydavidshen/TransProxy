@@ -143,6 +143,7 @@ func callInsertTransItem(goCount int) {
 				//手动ack
 				if check {
 					_ = msg.Ack(false) // 手动ACK，如果不ACK的话，那么无法保证这个消息被处理，可能它已经丢失了（比如消息队列挂了）
+					log.Println("CallInsertTrans ack success", string(msg.Body))
 				}
 			}
 		}(i)
