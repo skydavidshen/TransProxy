@@ -35,7 +35,7 @@ func AsyncTranslate(c *gin.Context) {
 	response.OkWithDetailed(item, "Asynchronous translation succeeded.", c)
 }
 
-// Translate 同步获取翻译信息
+// Translate 同步获取翻译的信息
 func Translate(c *gin.Context) {
 	var basic request.Basic
 	_ = c.ShouldBindJSON(&basic)
