@@ -43,9 +43,8 @@ func Translate(c *gin.Context) {
 	var item request.Item
 	_ = mapstructure.Decode(basic.Data, &item)
 	transItem, err := translator.TranslateFromItem(item)
-
 	if err != nil {
-		response.FailWithMessage("Failed to translate item.", c)
+		response.FailWithDetailed(err.Error(), "Failed to translate item.", c)
 		log.Println(err)
 		return
 	}

@@ -72,6 +72,7 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 				Method: methodHandler.NewProxy(urlProxy),
 			}
 
+			log.Println("translate text: ", item.Text)
 			transResult, err := translate.Translate(item.Text)
 			transText = transResult
 			if err != nil {
@@ -79,6 +80,7 @@ func (g *Google) Translate(item request.Item) (business.TranslateItem, error) {
 					zap.String("err", err.Error()),
 					zap.Any("item", item),
 				)
+				log.Println("translate err: ", err)
 				return business.TranslateItem{}, err
 			}
 		}

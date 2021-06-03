@@ -30,7 +30,7 @@ func TestIpIdea(t *testing.T) {
 }
 
 func TestSmartProxy(t *testing.T) {
-	urlProxy := utils.BuildSmartProxyUrl("sp9e3fd0b2", "12345678", "gate.smartproxy.com:7000")
+	urlProxy := utils.BuildSmartProxyUrl("sp052c6439", "Qa6QFMoiUODbnAlf", "gate.dc.smartproxy.com:20001")
 
 	translate := TranslationParams{
 		From:   "auto",
