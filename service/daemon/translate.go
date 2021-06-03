@@ -12,11 +12,19 @@ import (
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
+	"sync/atomic"
+	"time"
 )
 
 type Translate struct{}
 
 var translateRetryCount = 0
+
+// 原子性操作，多协程安全
+var getTranslationTryCount int64 = 0
+
+// 原子性操作，多协程安全
+var doInsertTransItemTryCount int64 = 0
 
 func (t Translate) DoTask() {
 	fmt.Println("Do task: Translate...")
@@ -76,19 +84,18 @@ func readItems(goCount int) {
 					continue
 				}
 
-				transItem, transErr := translatorHandler.TranslateFromItem(item)
+				transItem, transErr := getTranslation(item)
 				if transErr != nil {
-					_ = msg.Nack(false, true)
-
+					_ = msg.Nack(false, false)
 					manager.TP_LOG.Info(fmt.Sprintf("Translate item error: %v", transErr))
 					continue
 				}
 
 				manager.TP_LOG.Info(fmt.Sprintf("transItem: %v", transItem))
-				insertErr := insertTransItem(chInsert, transItem)
+				insertErr := doInsertTransItem(chInsert, transItem)
 				if insertErr != nil {
 					fmt.Println("Insert trans item error: ", insertErr)
-					_ = msg.Nack(false, true)
+					_ = msg.Nack(false, false)
 
 					manager.TP_LOG.Info(fmt.Sprintf("Insert trans item error: %v", insertErr))
 					continue
@@ -102,6 +109,44 @@ func readItems(goCount int) {
 		}(i)
 	}
 	log.Println("readItems done ...")
+}
+
+func getTranslation(item request.Item) (business.TranslateItem, error) {
+	var err error
+	for getTranslationTryCount < 5 {
+		// 原子性操作变量
+		atomic.AddInt64(&getTranslationTryCount, 1)
+		transItem, transErr := translatorHandler.TranslateFromItem(item)
+		err = transErr
+		if transErr != nil {
+			// sleep一秒再跑
+			time.Sleep(time.Second * 1)
+			return getTranslation(item)
+		}
+		getTranslationTryCount = 0
+		return transItem, nil
+	}
+	getTranslationTryCount = 0
+	return business.TranslateItem{}, fmt.Errorf("transErr: %v", err)
+}
+
+func doInsertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
+	var err error
+	for doInsertTransItemTryCount < 5 {
+		// 原子性操作变量
+		atomic.AddInt64(&doInsertTransItemTryCount, 1)
+		insertErr := insertTransItem(ch, item)
+		err = insertErr
+		if insertErr != nil {
+			// sleep一秒再跑
+			time.Sleep(time.Second * 1)
+			return doInsertTransItem(ch, item)
+		}
+		doInsertTransItemTryCount = 0
+		return nil
+	}
+	doInsertTransItemTryCount = 0
+	return fmt.Errorf("transErr: %v", err)
 }
 
 func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
