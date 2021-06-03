@@ -18,8 +18,6 @@ type Translate struct{}
 
 var translateRetryCount = 0
 
-const translateRetryMaxCount = 5
-
 func (t Translate) DoTask() {
 	fmt.Println("Do task: Translate...")
 
@@ -39,7 +37,7 @@ func readItems(goCount int) {
 	go mq.MonitorChannel(ch, func(data interface{}) {
 		// close channel导致的错误，这是正常的，此时data == nil
 		log.Printf("MonitorChannel communication message: %v", data)
-		if translateRetryCount > translateRetryMaxCount {
+		if translateRetryCount > enum.MonitorRabbitMqRetryMaxCount {
 			panic(fmt.Sprintf("MonitorChannel communication error: %v", data))
 		} else {
 			readItems(goCount)

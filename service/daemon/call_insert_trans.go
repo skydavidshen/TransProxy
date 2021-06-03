@@ -29,8 +29,6 @@ const deadNum = 5
 
 var callInsertTransRetryCount = 0
 
-const callInsertTransRetryMaxCount = 5
-
 type CallInsertTrans struct{}
 
 func (c CallInsertTrans) DoTask() {
@@ -90,7 +88,7 @@ func callInsertTransItem(goCount int) {
 	go mq.MonitorChannel(ch, func(data interface{}) {
 		// close channel导致的错误，这是正常的，此时data == nil
 		log.Printf("MonitorChannel communication message: %v", data)
-		if callInsertTransRetryCount > callInsertTransRetryMaxCount {
+		if callInsertTransRetryCount > enum.MonitorRabbitMqRetryMaxCount {
 			panic(fmt.Sprintf("MonitorChannel communication error: %v", data))
 		} else {
 			callInsertTransItem(goCount)
