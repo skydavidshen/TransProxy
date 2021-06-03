@@ -3,6 +3,7 @@ package daemon
 import (
 	"TransProxy/enum"
 	"TransProxy/manager"
+	"TransProxy/manager/mq"
 	"TransProxy/model/business"
 	"TransProxy/model/request"
 	"TransProxy/utils"
@@ -26,7 +27,11 @@ var retryPool map[string]int
 // 进入死信队列的阈值：尝试{deadNum}次
 const deadNum = 5
 
-type CallInsertTrans struct {}
+var callInsertTransRetryCount = 0
+
+const callInsertTransRetryMaxCount = 5
+
+type CallInsertTrans struct{}
 
 func (c CallInsertTrans) DoTask() {
 	fmt.Println("Do task: CallInsertTrans...")
@@ -45,7 +50,7 @@ func (c CallInsertTrans) DoTask() {
 	// 定时打印「需要重试的消息队列池子」
 	go func() {
 		for {
-			log.Println("retryPool: " ,retryPool)
+			log.Println("retryPool: ", retryPool)
 			time.Sleep(time.Second * 10)
 		}
 	}()
@@ -78,8 +83,21 @@ func receiveDelivery() {
 }
 
 func callInsertTransItem(goCount int) {
+	log.Println("callInsertTransItem start ...", "retry: ", callInsertTransRetryCount)
+	callInsertTransRetryCount++
+
+	ch := mq.GenChannel()
+	go mq.MonitorChannel(ch, func(data interface{}) {
+		// close channel导致的错误，这是正常的，此时data == nil
+		log.Printf("MonitorChannel communication message: %v", data)
+		if callInsertTransRetryCount > callInsertTransRetryMaxCount {
+			panic(fmt.Sprintf("MonitorChannel communication error: %v", data))
+		} else {
+			callInsertTransItem(goCount)
+		}
+	})
+
 	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.InsertTransItem
-	ch, _ := manager.TP_MQ_RABBIT.Channel()
 	messages, err := ch.Consume(
 		transItemQueue.Name,
 		"",
@@ -147,7 +165,6 @@ func CheckResp(resp []byte) (bool, error) {
 	}
 }
 
-
 // 发送transItem 到 对应的source方，数据安全通过：对称加密
 // 加密方式：token = md5(md5(data) + privateKey + timestamp)
 
@@ -177,10 +194,10 @@ func SendItem(item business.TranslateItem) ([]byte, error) {
 		strconv.Itoa(int(timeStamp)))
 	genToken := utils.GetMD5Hash(preStr)
 
-	data := map[string]interface{} {
-		"token": genToken,
-		"timestamp": strconv.FormatInt(timeStamp,10),
-		"data": item,
+	data := map[string]interface{}{
+		"token":     genToken,
+		"timestamp": strconv.FormatInt(timeStamp, 10),
+		"data":      item,
 	}
 
 	resp, _ := utils.DoRequest(data, url, http.MethodPost)

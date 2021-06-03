@@ -16,9 +16,9 @@ import (
 
 type Translate struct{}
 
-var retryCount = 0
+var translateRetryCount = 0
 
-const retryMaxCount = 5
+const translateRetryMaxCount = 5
 
 func (t Translate) DoTask() {
 	fmt.Println("Do task: Translate...")
@@ -32,23 +32,21 @@ func readItems(goCount int) {
 	// defer ch.Close() 不能在该方法执行，因为，所有的处理消息队列都是通过goroutine(协程)处理的，所以，readItems方法很快会结束
 	// 如果readItems结束之后就ch.Close()，那么，协程处理的业务，就会出问题，channel不存在。
 
-	log.Println("readItems start ...", "retry: ", retryCount)
-	retryCount++
-	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
-	ch := mq.GenChannel()
+	log.Println("readItems start ...", "retry: ", translateRetryCount)
+	translateRetryCount++
 
+	ch := mq.GenChannel()
 	go mq.MonitorChannel(ch, func(data interface{}) {
 		// close channel导致的错误，这是正常的，此时data == nil
-		log.Printf("Case default - MonitorChannel communication message: %v", data)
-		if retryCount > retryMaxCount {
-			panic(fmt.Sprintf("Case amqp.Error - MonitorChannel communication error: %v", data))
+		log.Printf("MonitorChannel communication message: %v", data)
+		if translateRetryCount > translateRetryMaxCount {
+			panic(fmt.Sprintf("MonitorChannel communication error: %v", data))
 		} else {
 			readItems(goCount)
 		}
 	})
 
-	println()
-
+	var transItemQueue = manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Option.Queue.TransItem
 	messages, err := ch.Consume(
 		transItemQueue.Name,
 		"",
@@ -122,8 +120,8 @@ func insertTransItem(ch *amqp.Channel, item business.TranslateItem) error {
 			Body:         body,
 			// Expiration 单位为 ms，1000ms = 1s
 			// 设置了expired可以防止程序本身故障导致重试次数计算不准，就算重试机制失效，通过消息超时也可以将超时消息塞入「死信队列」
-			Expiration:   manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Expiration,
-			MessageId: utils.GenUUID(),
+			Expiration: manager.TP_SERVER_CONFIG.MQ.RabbitMQ.Expiration,
+			MessageId:  utils.GenUUID(),
 		})
 	if err != nil {
 		manager.TP_LOG.Info(fmt.Sprintf("amqp publish msg fail, err: %s", err))
