@@ -14,17 +14,12 @@ Golang
 Gin框架 + RabbitMq + Gorm + Nacos配置中心 + docker容器化部署(支持k8s编排，rancher)
 
 ## 基础库
-Viper：配置文件处理服务:支持热修改
-
-Zap：日志服务
-
-Gorm：数据库服务
-
-redis：缓存服务
-
-rabbitMQ：消息中间件
-
-validator：请求验证库
+* Viper：配置文件处理服务:支持热修改
+* Zap：日志服务
+* Gorm：数据库服务
+* redis：缓存服务
+* rabbitMQ：消息中间件
+* validator：请求验证库
 
 ## 开发思想
 1. 项目分层
