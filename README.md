@@ -26,7 +26,7 @@ rabbitMQ：消息中间件
 
 validator：请求验证库
 
-## 如果有兴趣，可以联系交流
+## 问题？交流？搞点大事？ 联系我吧 ～
 微信：shen_da_wei
 
 邮箱：shendawei123@gmail.com
