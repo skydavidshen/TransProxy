@@ -26,6 +26,5 @@ Gin框架 + RabbitMq + Gorm + Nacos配置中心 + docker容器化部署(支持k8
 2. 面向接口编程
 
 ## 问题？交流？搞点大事？ 联系我吧 ～
-微信：shen_da_wei
-
-邮箱：shendawei123@gmail.com
+* 微信：shen_da_wei
+* 邮箱：shendawei123@gmail.com
